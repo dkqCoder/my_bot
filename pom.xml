@@ -423,7 +423,7 @@
         <dependency>
             <groupId>com.jdd</groupId>
             <artifactId>fm_core</artifactId>
-            <version>4.2-SNAPSHOT</version>
+            <version>4.3.0</version>
         </dependency>
     </dependencies>
 </project>
