@@ -351,17 +351,8 @@
             <artifactId>scala-library</artifactId>
             <version>2.10.4</version>
         </dependency>
-        <dependency>
-            <groupId>io.spray</groupId>
-            <artifactId>spray-client_2.11</artifactId>
-            <version>1.3.1-20140423</version>
-        </dependency>
 
-        <dependency>
-            <groupId>com.jdd</groupId>
-            <artifactId>alisoft-xplatform-asf-cache</artifactId>
-            <version>2.5.1</version>
-        </dependency>
+
         <!-- dubbo -->
         <dependency>
             <groupId>com.alibaba</groupId>
