@@ -26,14 +26,14 @@ public class SmsServiceImpl implements SmsService {
 
     private static final Logger logger = LoggerFactory.getLogger(SmsServiceImpl.class);
 
-    @Autowired
-    private SmsSendMsgService smsSendMsgService;
+    /*@Autowired
+    private SmsSendMsgService smsSendMsgService;*/
 
 
     @Override
     public Boolean sendVerifyCode(Integer siteId, String mobile, VerifyCodeEnum verifyCodeEnum, String userId, String verifyCode, Integer smsType, String traceId) {
         try {
-            logger.info("验证码 mobile:{} userId:{} traceId:{} codeEnum:{},smsType:{}", mobile, userId, traceId, verifyCodeEnum.getName(),smsType);
+            logger.info("验证码 mobile:{} userId:{} traceId:{} codeEnum:{},smsType:{}", mobile, userId, traceId, verifyCodeEnum.getName(), smsType);
             String messageBody = "";
             if (verifyCodeEnum == VerifyCodeEnum.LOGINFAST) {
                 messageBody = String.format("您的手机注册验证码是:%s", verifyCode);

@@ -30,9 +30,10 @@ http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
         <list>
             <value>classpath:prop-mq-activeMq.properties</value>
             <value>classpath:zoo.properties</value>
-            <value>classpath:prop-db-mysql-user.properties</value>
+            <value>classpath:prop-db-mysql-tty.properties</value>
             <value>classpath:prop-common-config.properties</value>
-            <value>classpath:prop-cache-redis-user.properties</value>
+            <value>classpath:prop-cache-redis-tty.properties</value>
+            <value>classpath:prop-db-redis-tty.properties</value>
         </list>
     </property>
 </bean>

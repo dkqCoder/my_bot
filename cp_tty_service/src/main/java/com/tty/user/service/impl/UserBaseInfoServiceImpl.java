@@ -5,7 +5,9 @@ import com.tty.common.utils.Result;
 import com.tty.user.service.UserBaseInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
 
+@Service("userBaseInfoService")
 public class UserBaseInfoServiceImpl implements UserBaseInfoService {
 
     private static final Logger logger = LoggerFactory.getLogger(UserBaseInfoServiceImpl.class);
