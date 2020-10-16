@@ -144,7 +144,7 @@ http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
 
     <bean id="multipleDataSource" class="com.jdd.fm.core.db.ds.MultipleDataSource">
         <!-- 默认数据库是写的数据库 -->
-        <property name="defaultTargetDataSource" ref="dataSourceWrite"/>
+        <property name="defaultTargetDataSource" ref="dataDataSourceWrite"/>
         <property name="targetDataSources">
             <map>
                 <entry value-ref="dataSourceWrite" key="dataSourceWrite"/>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-4.0.xsd">
+
+
+    <bean name="genericObjectPoolConfig" class="org.apache.commons.pool2.impl.GenericObjectPoolConfig">
+        <property name="maxWaitMillis" value="-1" />
+        <property name="maxTotal" value="1000" />
+        <property name="minIdle" value="10" />
+        <property name="maxIdle" value="1000" />
+    </bean>
+    <bean id="tokenRedis" class="com.jdd.fm.core.redis.JedisClusterFactory">
+        <property name="connectionTimeout" value="3000" />
+        <property name="soTimeout" value="3000" />
+        <property name="maxRedirections" value="5" />
+        <property name="genericObjectPoolConfig" ref="genericObjectPoolConfig" />
+        <property name="jedisClusterNodes">
+            <set>
+                <value>${token.redis.cluster.node01}</value>
+                <value>${token.redis.cluster.node02}</value>
+                <value>${token.redis.cluster.node03}</value>
+                <value>${token.redis.cluster.node04}</value>
+                <value>${token.redis.cluster.node05}</value>
+                <value>${token.redis.cluster.node06}</value>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="userRedis" class="com.jdd.fm.core.redis.JedisClusterFactory">
+        <property name="connectionTimeout" value="3000" />
+        <property name="soTimeout" value="3000" />
+        <property name="maxRedirections" value="5" />
+        <property name="genericObjectPoolConfig" ref="genericObjectPoolConfig" />
+        <property name="jedisClusterNodes">
+            <set>
+                <value>${redis.cluster.node01}</value>
+                <value>${redis.cluster.node02}</value>
+                <value>${redis.cluster.node03}</value>
+                <value>${redis.cluster.node04}</value>
+                <value>${redis.cluster.node05}</value>
+                <value>${redis.cluster.node06}</value>
+            </set>
+        </property>
+    </bean>
+
+    <bean id="jedisClusterFactory" class="com.jdd.fm.core.redis.JedisClusterFactory">
+        <property name="connectionTimeout" value="3000" />
+        <property name="soTimeout" value="3000" />
+        <property name="maxRedirections" value="5" />
+        <property name="genericObjectPoolConfig" ref="genericObjectPoolConfig" />
+        <property name="jedisClusterNodes">
+            <set>
+                <value>${redis.cluster.node01}</value>
+                <value>${redis.cluster.node02}</value>
+                <value>${redis.cluster.node03}</value>
+                <value>${redis.cluster.node04}</value>
+                <value>${redis.cluster.node05}</value>
+                <value>${redis.cluster.node06}</value>
+            </set>
+        </property>
+    </bean>
+
+</beans>
