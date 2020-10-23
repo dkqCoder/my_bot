@@ -1,11 +1,16 @@
 package com.tty.ticket.service;
 
+import com.tty.ticket.dao.entity.TicketConfigENT;
+
 /**
  * 出票配置
- *
- * @author yys
- * @create 2017-07-06 18:52:52
  **/
 public interface TicketConfigService {
     Integer getSysSendType();
+
+    TicketConfigENT getCurrentTicketConfigValueByCode(String code);
+
+    boolean getSendSwitch();
+
+
 }

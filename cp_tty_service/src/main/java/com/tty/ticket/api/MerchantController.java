@@ -51,8 +51,6 @@ public class MerchantController extends BaseController {
 
     /**
      * 接受商户投注
-     *
-     * @return
      */
     @RequestMapping(value = "/sendTickets", method = RequestMethod.POST)
     public ResultModel sendTickets(@RequestBody MerchantVO merchantVO) {
@@ -63,18 +61,22 @@ public class MerchantController extends BaseController {
             MerchantResultVO merchantResultVO = merchantBiz.checkSign(merchantVO);
             logger.info("[出票系统][投注请求]接收投注信息,明文信息:{}", GfJsonUtil.toJSONString(merchantResultVO));
 
-            if (!merchantResultVO.isSuccess()) {
+            // TODO: 2020/10/12 待统一加密方式
+            /*if (!merchantResultVO.isSuccess()) {
                 return getErrorResult(merchantResultVO.getMsg());
-            }
+            }*/
 
             /**
              * 1.过滤已经投注的电子票
              * 2.转换为标准投注格式
              * 3.分配出票商
              */
+
+            //1.过滤已经投注的电子票
             MerchantSendDataVO merchantSendDataVO = GfJsonUtil.parseObject(merchantResultVO.getData(), MerchantSendDataVO.class);
             List<TicketDTO> ticketDTOList = ticketBiz.wrapTicketDTOList(merchantVO.getMerchantId(), merchantSendDataVO);
 
+            //获取系统投注方式
             Integer sysSendType = ticketConfigService.getSysSendType();
 
             /**
@@ -106,27 +108,29 @@ public class MerchantController extends BaseController {
 
     /**
      * 电子票查询接口
-     *
-     * @param merchantVO
-     * @return
      */
     @RequestMapping(value = "/queryTickets", method = RequestMethod.POST)
     public ResultModel queryTickets(@RequestBody MerchantVO merchantVO) {
         List<MerchantTicketVO> voList = null;
         try {
-            /** 数据合法性验证 */
+
+            //校验签名，解密电子票号
             MerchantResultVO merchantResultVO = merchantBiz.checkSign(merchantVO);
             if (!merchantResultVO.isSuccess()) {
                 return getErrorResult(merchantResultVO.getMsg());
             }
 
+            //根据参数解密获取ticket_no
             String[] ticketNos = merchantResultVO.getData().split(",");
             List<String> ticketNoList = Arrays.asList(ticketNos);
             if (ticketNos.length > 50) {
                 ticketNoList = Arrays.stream(ticketNos).limit(50).collect(Collectors.toList());
             }
 
+            //根据商户号和ticket_no从ticket_ticket中获取电子票信息
             List<TicketTicketENT> list = ticketTicketService.findListByTickets(ticketNoList, merchantVO.getMerchantId());
+
+            //将电子票信息转成输出格式
             voList = ticketBiz.wrapMerchantTicketVOList(list);
             return getSuccessResult(voList);
 
@@ -143,17 +147,17 @@ public class MerchantController extends BaseController {
         return rm;
     }
 
-    private ResultModel getErrorResult(String errMsg) {
-        ResultModel rm = new ResultModel();
-        rm.setCode(ResultModel.ERROR);
-        rm.setMsg(errMsg);
-        return rm;
-    }
-
     private ResultModel getSuccessResult() {
         ResultModel rm = new ResultModel();
         rm.setCode(ResultModel.SUCCESS);
         rm.setMsg(ResultModel.MSG_SUCCESS_DESC);
+        return rm;
+    }
+
+    private ResultModel getErrorResult(String errMsg) {
+        ResultModel rm = new ResultModel();
+        rm.setCode(ResultModel.ERROR);
+        rm.setMsg(errMsg);
         return rm;
     }
 

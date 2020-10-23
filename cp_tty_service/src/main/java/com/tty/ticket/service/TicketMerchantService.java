@@ -14,15 +14,8 @@ import java.util.Map;
  **/
 public interface TicketMerchantService {
 
-    ExtModel listTicketMerchant(JSONObject jsonParm);
-
-    ExtModel listAllTicketMerchant(JSONObject jsonParm);
-
-    void saveTicketMerchant(TicketMerchantENT TicketMerchant);
-
-    void updateTicketMerchant(TicketMerchantENT TicketMerchant);
-
     TicketMerchantENT getCurrentMerchantENT(Integer merchantId);
 
     Map<Integer, TicketMerchantENT> getCurrentMerchantENTMap();
+
 }

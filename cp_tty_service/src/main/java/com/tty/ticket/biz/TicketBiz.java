@@ -38,11 +38,7 @@ public class TicketBiz {
     private static final Logger logger = LoggerFactory.getLogger(TicketBiz.class);
 
     /**
-     * 按出票商，彩种,和期次进行分组
-     * 竞彩足球和竞彩篮球 不按期次进行分组
-     *
-     * @param ticketDTOList
-     * @return
+     * 按出票商，彩种,和期次进行分组 竞彩足球和竞彩篮球 不按期次进行分组
      */
     public Map<String, List<TicketDTO>> groupByAgentAndLotteryAndIssueName(List<TicketDTO> ticketDTOList) {
         return ticketDTOList.stream().collect(Collectors.groupingBy((TicketDTO r) -> {
@@ -63,8 +59,6 @@ public class TicketBiz {
 
     /**
      * 合众出票商报文ID后8位
-     *
-     * @return
      */
     public String generateHeZhongIdSerial() {
         String redisKey = String.format(TicketRedisKeyContext.TICKET_HEZHONG_ID_SERIAL, DateUtil.format(new Date(), "yyyyMMdd"));
@@ -76,9 +70,6 @@ public class TicketBiz {
     /**
      * 170416304=4_2S1.750F227.5,170416303=4_2S1.750F204.5,170416302=3_02S3.750/03S3.850,170416301=4_2S1.700F209.5
      * 返回出票SP 给商户
-     *
-     * @param ticketPrintSpDTOList
-     * @return
      */
     public String generatePrintSpContent(List<TicketPrintSpDTO> ticketPrintSpDTOList) {
         //按场次分组
@@ -99,20 +90,24 @@ public class TicketBiz {
         }
 
         return map.values().stream().map(singleMatch -> String.format("%s=%s_%s%s",
-                singleMatch.get(0).getIssueMatchName(),
-                singleMatch.get(0).getPlaytypeId() % 10,
-                singleMatch.stream().sorted(Comparator.comparing(TicketPrintSpDTO::getOption)).map(r -> String.format("%sS%s", r.getOption(), r.getSp())).collect(Collectors.joining("/")),
-                singleMatch.stream().findFirst().map(r -> {
-                    String score = "";
-                    if (null != r.getOptionScore() && r.getOptionScore().compareTo(BigDecimal.ZERO) != 0) {
-                        score = String.format("F%s", r.getOptionScore());
-                    }
-                    return score;
-                }).get()
+            singleMatch.get(0).getIssueMatchName(),
+            singleMatch.get(0).getPlaytypeId() % 10,
+            singleMatch.stream().sorted(Comparator.comparing(TicketPrintSpDTO::getOption)).map(r -> String.format("%sS%s", r.getOption(), r.getSp())).collect(Collectors.joining("/")),
+            singleMatch.stream().findFirst().map(r -> {
+                String score = "";
+                if (null != r.getOptionScore() && r.getOptionScore().compareTo(BigDecimal.ZERO) != 0) {
+                    score = String.format("F%s", r.getOptionScore());
+                }
+                return score;
+            }).get()
         )).collect(Collectors.joining(","));
     }
 
 
+    /**
+     * @param merchantId         出票商ID
+     * @param merchantSendDataVO 待出票信息
+     */
     public List<TicketDTO> wrapTicketDTOList(String merchantId, MerchantSendDataVO merchantSendDataVO) {
         List<TicketDTO> ticketDTOList = new ArrayList<>();
         for (MerchantSendDataItemVO dataItem : merchantSendDataVO.getData()) {
@@ -125,17 +120,20 @@ public class TicketBiz {
 
             TicketDTO ticketDTO = new TicketDTO();
             ticketDTO.setMoney(dataItem.getMoney());
-            ticketDTO.setLotteryId(dataItem.getLotteryId());
-            ticketDTO.setMultiple(dataItem.getMultiple());
+            ticketDTO.setLotteryId(dataItem.getLotteryId());//彩种
+            ticketDTO.setMultiple(dataItem.getMultiple());//注数
             ticketDTO.setSchemeId(dataItem.getSchemeId());
             ticketDTO.setNumber(dataItem.getContent());
             ticketDTO.setPlayTypeId(dataItem.getPlayType());
             ticketDTO.setTicketNo(dataItem.getTicketNo());
             ticketDTO.setIssueName(dataItem.getIssueName());
             ticketDTO.setMerchantId(Integer.valueOf(merchantId));
+            //根据玩法，投注金额，投注倍数计算出注数
             ticketDTO.setUnitCount(LotteryUtil.getUnitCount(dataItem.getPlayType(), dataItem.getMoney(), dataItem.getMultiple()));
-            ticketDTO.setPrintEndTime(DateUtil.format(dataItem.getPrintEndTime()));
+            ticketDTO.setPrintEndTime(DateUtil.format(dataItem.getPrintEndTime())); //投注截止日期
+            // TODO: 2020/10/15 制定路由，出票规则？？？？？
             ticketDTO.setAgentId(agentRouteBiz.getAgentId(ticketDTO));
+
             ticketDTOList.add(ticketDTO);
         }
         return ticketDTOList;

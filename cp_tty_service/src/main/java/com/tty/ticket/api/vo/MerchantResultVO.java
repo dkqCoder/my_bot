@@ -1,7 +1,6 @@
 package com.tty.ticket.api.vo;
 
 /**
- * Created by chenpengfei on 2017/8/10.
  */
 public class MerchantResultVO {
 
