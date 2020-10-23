@@ -2,10 +2,10 @@ package com.tty.task.ent.crawling.jcgw;
 
 /**
  * @Author: dukeqiang
- * @Date: 2020/10/12 19:53
- * 胜平负、让球胜平负
+ * @Date: 2020/10/19 19:57
+ * 比分
  */
-public class WdlEnt {
+public class CrsEnt {
     private String id;
     private String num;
     private String date;
@@ -20,9 +20,7 @@ public class WdlEnt {
     private String a_id;
     private String a_cn;
     private String index_show;
-    private String show;
-    private Hhad hhad;
-    private Hhad had;
+    private String crs;
     private String l_cn_abbr;
     private String h_cn_abbr;
     private String a_cn_abbr;
@@ -35,6 +33,14 @@ public class WdlEnt {
     private String weather_city;
     private String temperature;
     private String weather_pic;
+
+    public String getCrs() {
+        return crs;
+    }
+
+    public void setCrs(String crs) {
+        this.crs = crs;
+    }
 
     public String getId() {
         return id;
@@ -148,29 +154,6 @@ public class WdlEnt {
         this.index_show = index_show;
     }
 
-    public String getShow() {
-        return show;
-    }
-
-    public void setShow(String show) {
-        this.show = show;
-    }
-
-    public Hhad getHhad() {
-        return hhad;
-    }
-
-    public void setHhad(Hhad hhad) {
-        this.hhad = hhad;
-    }
-
-    public Hhad getHad() {
-        return had;
-    }
-
-    public void setHad(Hhad had) {
-        this.had = had;
-    }
 
     public String getL_cn_abbr() {
         return l_cn_abbr;
@@ -268,3 +251,5 @@ public class WdlEnt {
         this.weather_pic = weather_pic;
     }
 }
+
+

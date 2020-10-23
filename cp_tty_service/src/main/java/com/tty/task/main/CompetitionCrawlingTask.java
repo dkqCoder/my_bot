@@ -16,5 +16,8 @@ public class CompetitionCrawlingTask {
     public void start(){
         String traceId = String.valueOf(UUID.randomUUID());
         competitionCrawlingService.crawlingWDLInfo(traceId,CrawlingSourceContext.JCGW_SOURCE);
+        competitionCrawlingService.crawlingCrsWDLInfo(traceId,CrawlingSourceContext.JCGW_SOURCE);
+        competitionCrawlingService.crawlingGoalsWDLInfo(traceId,CrawlingSourceContext.JCGW_SOURCE);
+        competitionCrawlingService.crawlingHafuWDLInfo(traceId,CrawlingSourceContext.JCGW_SOURCE);
     }
 }

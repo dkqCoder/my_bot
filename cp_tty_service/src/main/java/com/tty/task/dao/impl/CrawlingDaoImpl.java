@@ -29,12 +29,12 @@ public class CrawlingDaoImpl extends BaseDao implements CrawlingDao {
     @Override
     @Transactional
     @DataSource(name = "dataDataSourceWrite")
-    public void saveCompetitionInfo(String traceId, JczqDataDTO jczqDataDTO) {
+    public void saveWDLCompetitionInfo(String traceId, JczqDataDTO jczqDataDTO) {
         try {
             StringBuilder sb = new StringBuilder("insert into basedata_match_jczq " +
                     " (s_issue_name,s_issue_match_name,n_weekday,s_weekday_name,s_match_no,s_host_team,n_host_team_id,s_visit_team,n_visit_team_id,d_match_start_time,d_buy_end_time,n_rq,s_bg_color,s_euro_odds,s_full_score,s_half_score,s_spf_sp,s_rqspf_sp,s_jqs_sp,s_cbf_sp,s_bqc_sp,s_match_result,n_edit_status,n_audit_status,n_match_id,n_tournament_id,s_tournament_name) values " +
                     " (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?) on duplicate key update " +
-                    " s_euro_odds=?, s_full_score=?, s_half_score=?,s_spf_sp=?,s_rqspf_sp=?,s_jqs_sp=?,s_cbf_sp=?,s_bqc_sp=?,s_match_result=? " +
+                    " s_spf_sp=?,s_rqspf_sp=? " +
                     "" );
             SQLQuery query = getSQLQuery(sb.toString());
             query.setParameter(0,jczqDataDTO.getIssueName());
@@ -66,19 +66,109 @@ public class CrawlingDaoImpl extends BaseDao implements CrawlingDao {
             query.setParameter(26,jczqDataDTO.getTournamentName());
 
 
-            query.setParameter(27,jczqDataDTO.getEuroOdds());
-            query.setParameter(28,jczqDataDTO.getFullScore());
-            query.setParameter(29,jczqDataDTO.getHalfScore());
-            query.setParameter(30,jczqDataDTO.getSpfSp());
-            query.setParameter(31,jczqDataDTO.getRqspfSp());
-            query.setParameter(32,jczqDataDTO.getJqsSp());
-            query.setParameter(33,jczqDataDTO.getCbfSp());
-            query.setParameter(34,jczqDataDTO.getBqcSp());
-            query.setParameter(35,jczqDataDTO.getMatchResult());
+            query.setParameter(27,jczqDataDTO.getSpfSp());
+            query.setParameter(28,jczqDataDTO.getRqspfSp());
+
 
             query.executeUpdate();
         } catch (Exception e) {
-            logger.error("{}:竞彩足球赛事信息保存异常,e:{},traceId:{}", LogContext.CRAWLING_LOG_PRE,LogExceptionStackTrace.erroStackTrace(e),traceId);
+            logger.error("{}:竞彩足球胜平负让球胜平负赔率保存异常,e:{},traceId:{}", LogContext.CRAWLING_LOG_PRE,LogExceptionStackTrace.erroStackTrace(e),traceId);
+        }
+    }
+
+    @Override
+    @Transactional
+    @DataSource(name = "dataDataSourceWrite")
+    public void saveCrsCompetitionInfo(String traceId, JczqDataDTO jczqDataDTO) {
+        try {
+            StringBuilder sb = new StringBuilder("insert into basedata_match_jczq " +
+                    " (s_issue_name,s_issue_match_name,n_weekday,s_weekday_name,s_match_no,s_host_team,n_host_team_id,s_visit_team,n_visit_team_id,d_match_start_time,d_buy_end_time,s_cbf_sp) values " +
+                    " (?,?,?,?,?,?,?,?,?,?,?,?) on duplicate key update " +
+                    " s_cbf_sp=? " +
+                    "" );
+            SQLQuery query = getSQLQuery(sb.toString());
+            query.setParameter(0,jczqDataDTO.getIssueName());
+            query.setParameter(1,jczqDataDTO.getIssueMatchName());
+            query.setParameter(2,jczqDataDTO.getWeekday());
+            query.setParameter(3,jczqDataDTO.getWeekdayName());
+            query.setParameter(4,jczqDataDTO.getMatchNo());
+            query.setParameter(5,jczqDataDTO.getHostTeam());
+            query.setParameter(6,jczqDataDTO.getHostTeamId());
+            query.setParameter(7,jczqDataDTO.getVisitTeam());
+            query.setParameter(8,jczqDataDTO.getVisitTeamId());
+            query.setParameter(9,jczqDataDTO.getMatchStartTime());
+            query.setParameter(10,jczqDataDTO.getBuyEndTime());
+            query.setParameter(11,jczqDataDTO.getCbfSp());
+
+            query.setParameter(12,jczqDataDTO.getCbfSp());
+
+            query.executeUpdate();
+        } catch (Exception e) {
+            logger.error("{}:竞彩足球比分赔率信息保存异常,e:{},traceId:{}", LogContext.CRAWLING_LOG_PRE,LogExceptionStackTrace.erroStackTrace(e),traceId);
+        }
+    }
+
+    @Override
+    @Transactional
+    @DataSource(name = "dataDataSourceWrite")
+    public void saveGoalsCompetitionInfo(String traceId, JczqDataDTO jczqDataDTO) {
+        try {
+            StringBuilder sb = new StringBuilder("insert into basedata_match_jczq " +
+                    " (s_issue_name,s_issue_match_name,n_weekday,s_weekday_name,s_match_no,s_host_team,n_host_team_id,s_visit_team,n_visit_team_id,d_match_start_time,d_buy_end_time,s_jqs_sp) values " +
+                    " (?,?,?,?,?,?,?,?,?,?,?,?) on duplicate key update " +
+                    " s_jqs_sp=? " +
+                    "" );
+            SQLQuery query = getSQLQuery(sb.toString());
+            query.setParameter(0,jczqDataDTO.getIssueName());
+            query.setParameter(1,jczqDataDTO.getIssueMatchName());
+            query.setParameter(2,jczqDataDTO.getWeekday());
+            query.setParameter(3,jczqDataDTO.getWeekdayName());
+            query.setParameter(4,jczqDataDTO.getMatchNo());
+            query.setParameter(5,jczqDataDTO.getHostTeam());
+            query.setParameter(6,jczqDataDTO.getHostTeamId());
+            query.setParameter(7,jczqDataDTO.getVisitTeam());
+            query.setParameter(8,jczqDataDTO.getVisitTeamId());
+            query.setParameter(9,jczqDataDTO.getMatchStartTime());
+            query.setParameter(10,jczqDataDTO.getBuyEndTime());
+            query.setParameter(11,jczqDataDTO.getJqsSp());
+
+            query.setParameter(12,jczqDataDTO.getJqsSp());
+
+            query.executeUpdate();
+        } catch (Exception e) {
+            logger.error("{}:竞彩足球进球数赔率信息保存异常,e:{},traceId:{}", LogContext.CRAWLING_LOG_PRE,LogExceptionStackTrace.erroStackTrace(e),traceId);
+        }
+    }
+
+    @Override
+    @Transactional
+    @DataSource(name = "dataDataSourceWrite")
+    public void saveHafuCompetitionInfo(String traceId, JczqDataDTO jczqDataDTO) {
+        try {
+            StringBuilder sb = new StringBuilder("insert into basedata_match_jczq " +
+                    " (s_issue_name,s_issue_match_name,n_weekday,s_weekday_name,s_match_no,s_host_team,n_host_team_id,s_visit_team,n_visit_team_id,d_match_start_time,d_buy_end_time,s_bqc_sp) values " +
+                    " (?,?,?,?,?,?,?,?,?,?,?,?) on duplicate key update " +
+                    " s_bqc_sp=? " +
+                    "" );
+            SQLQuery query = getSQLQuery(sb.toString());
+            query.setParameter(0,jczqDataDTO.getIssueName());
+            query.setParameter(1,jczqDataDTO.getIssueMatchName());
+            query.setParameter(2,jczqDataDTO.getWeekday());
+            query.setParameter(3,jczqDataDTO.getWeekdayName());
+            query.setParameter(4,jczqDataDTO.getMatchNo());
+            query.setParameter(5,jczqDataDTO.getHostTeam());
+            query.setParameter(6,jczqDataDTO.getHostTeamId());
+            query.setParameter(7,jczqDataDTO.getVisitTeam());
+            query.setParameter(8,jczqDataDTO.getVisitTeamId());
+            query.setParameter(9,jczqDataDTO.getMatchStartTime());
+            query.setParameter(10,jczqDataDTO.getBuyEndTime());
+            query.setParameter(11,jczqDataDTO.getBqcSp());
+
+            query.setParameter(12,jczqDataDTO.getBqcSp());
+
+            query.executeUpdate();
+        } catch (Exception e) {
+            logger.error("{}:竞彩足球半全场赔率信息保存异常,e:{},traceId:{}", LogContext.CRAWLING_LOG_PRE,LogExceptionStackTrace.erroStackTrace(e),traceId);
         }
     }
 }

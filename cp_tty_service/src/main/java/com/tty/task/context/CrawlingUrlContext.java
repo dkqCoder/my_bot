@@ -24,4 +24,9 @@ public class CrawlingUrlContext {
      * 竞彩官网半全场胜平负玩法 url
      */
     public final static String JCGW_HAFU_WDL_URL = "https://i.sporttery.cn/odds_calculator/get_odds?i_format=json&poolcode[]=hafu";
+
+    /**
+     * 竞彩官网赛果信息 url
+     */
+    public final static String JCGW_POOL_RS_URL = "";
 }

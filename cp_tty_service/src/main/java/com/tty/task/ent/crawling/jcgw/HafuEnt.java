@@ -2,10 +2,9 @@ package com.tty.task.ent.crawling.jcgw;
 
 /**
  * @Author: dukeqiang
- * @Date: 2020/10/12 19:53
- * 胜平负、让球胜平负
+ * @Date: 2020/10/20 19:14
  */
-public class WdlEnt {
+public class HafuEnt {
     private String id;
     private String num;
     private String date;
@@ -21,8 +20,7 @@ public class WdlEnt {
     private String a_cn;
     private String index_show;
     private String show;
-    private Hhad hhad;
-    private Hhad had;
+    private Hafu hafu;
     private String l_cn_abbr;
     private String h_cn_abbr;
     private String a_cn_abbr;
@@ -156,20 +154,12 @@ public class WdlEnt {
         this.show = show;
     }
 
-    public Hhad getHhad() {
-        return hhad;
+    public com.tty.task.ent.crawling.jcgw.Hafu getHafu() {
+        return hafu;
     }
 
-    public void setHhad(Hhad hhad) {
-        this.hhad = hhad;
-    }
-
-    public Hhad getHad() {
-        return had;
-    }
-
-    public void setHad(Hhad had) {
-        this.had = had;
+    public void setHafu(com.tty.task.ent.crawling.jcgw.Hafu hafu) {
+        this.hafu = hafu;
     }
 
     public String getL_cn_abbr() {
