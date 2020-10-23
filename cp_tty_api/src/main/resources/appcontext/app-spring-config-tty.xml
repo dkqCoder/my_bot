@@ -14,5 +14,27 @@
     <import resource="app-db-mysql-tty.xml"/>
     <import resource="app-db-redis-tty.xml"/>
     <import resource="app-spring-bean-tty.xml"/>
+    <import resource="classpath:fm/spring-ehcache.xml" />
+
+    <context:component-scan base-package="com.tty.user">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!-- 动态数据源aop -->
+    <bean id="dataSourceExchange" class="com.jdd.fm.core.db.ds.DataSourceExchange"/>
+    <aop:config>
+        <aop:pointcut id="transactionPointCut"
+                      expression="execution(* com.tty..*.*(..))"/>
+        <aop:advisor advice-ref="dataSourceExchange" pointcut-ref="transactionPointCut"
+                     order="1"/>
+    </aop:config>
+
+    <bean id="scannerConfig" class="com.jdd.fm.core.annotations.scn.Scanner" init-method="init">
+        <property name="packageName" value="com.jdd.user.controller.api" />
+    </bean>
+
+    <bean id="initConfig" class="com.jdd.fm.core.servlet.InitConfig" init-method="init">
+        <property name="initPackge" value="${user.initPackge}" />
+    </bean>
 
 </beans>

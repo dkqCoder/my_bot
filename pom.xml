@@ -12,6 +12,7 @@
         <module>cp_tty_api</module>
         <module>cp_tty_service</module>
         <module>cp_tty_admin</module>
+        <module>cp_tty_task</module>
     </modules>
     <name>cp_tty</name>
     <properties>

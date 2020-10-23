@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="
+http://www.springframework.org/schema/beans
+http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+http://www.springframework.org/schema/tx
+http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
+">
+    <!-- Druid连接池 -->
+    <bean name="dataSourceWrite" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="net.sf.log4jdbc.DriverSpy"></property>
+        <property name="url" value="${user.url.write}"></property>
+        <property name="username" value="${user.username.write}"></property>
+        <property name="password" value="${user.password.write}"></property>
+        <property name="maxActive" value="200"/>
+        <property name="maxWait" value="60000"/>
+        <property name="poolPreparedStatements" value="true"/>
+        <property name="maxOpenPreparedStatements" value="100"/>
+        <property name="defaultAutoCommit" value="true"/>
+        <property name="filters" value="stat"/>
+        <property name="minEvictableIdleTimeMillis" value="30000"/>
+        <property name="removeAbandonedTimeout" value="600"/>
+        <property name="removeAbandoned" value="true"/>
+        <property name="logAbandoned" value="true"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="useUnfairLock" value="true"/>
+        <property name="validationQuery" value="select 1"/>
+        <property name="connectionInitSqls" value="set names utf8mb4;" />
+    </bean>
+    <!-- Druid连接池 -->
+    <bean name="dataSourceRead" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="net.sf.log4jdbc.DriverSpy"></property>
+        <property name="url" value="${user.url.read}"></property>
+        <property name="username" value="${user.username.read}"></property>
+        <property name="password" value="${user.password.read}"></property>
+        <property name="maxActive" value="200"/>
+        <property name="maxWait" value="60000"/>
+        <property name="filters" value="stat"/>
+        <property name="poolPreparedStatements" value="true"/>
+        <property name="maxOpenPreparedStatements" value="100"/>
+        <property name="defaultAutoCommit" value="true"/>
+        <property name="minEvictableIdleTimeMillis" value="30000"/>
+        <property name="removeAbandoned" value="true"/>
+        <property name="removeAbandonedTimeout" value="600"/>
+        <property name="logAbandoned" value="true"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="useUnfairLock" value="true"/>
+        <property name="validationQuery" value="select 1"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="connectionInitSqls" value="set names utf8mb4;" />
+    </bean>
+
+    <!-- Druid连接池 -->
+    <bean name="appDataSourceWrite" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="net.sf.log4jdbc.DriverSpy"></property>
+        <property name="url" value="${app.url.write}"></property>
+        <property name="username" value="${app.username.write}"></property>
+        <property name="password" value="${app.password.write}"></property>
+        <property name="maxActive" value="200"/>
+        <property name="maxWait" value="60000"/>
+        <property name="poolPreparedStatements" value="true"/>
+        <property name="maxOpenPreparedStatements" value="100"/>
+        <property name="defaultAutoCommit" value="true"/>
+        <property name="filters" value="stat"/>
+        <property name="minEvictableIdleTimeMillis" value="30000"/>
+        <property name="removeAbandonedTimeout" value="600"/>
+        <property name="removeAbandoned" value="true"/>
+        <property name="logAbandoned" value="true"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="useUnfairLock" value="true"/>
+        <property name="validationQuery" value="select 1"/>
+        <property name="connectionInitSqls" value="set names utf8mb4;" />
+    </bean>
+    <!-- Druid连接池 -->
+    <bean name="appDataSourceRead" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="net.sf.log4jdbc.DriverSpy"></property>
+        <property name="url" value="${app.url.read}"></property>
+        <property name="username" value="${app.username.read}"></property>
+        <property name="password" value="${app.password.read}"></property>
+        <property name="maxActive" value="200"/>
+        <property name="maxWait" value="60000"/>
+        <property name="filters" value="stat"/>
+        <property name="poolPreparedStatements" value="true"/>
+        <property name="maxOpenPreparedStatements" value="100"/>
+        <property name="defaultAutoCommit" value="true"/>
+        <property name="minEvictableIdleTimeMillis" value="30000"/>
+        <property name="removeAbandoned" value="true"/>
+        <property name="removeAbandonedTimeout" value="600"/>
+        <property name="logAbandoned" value="true"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="useUnfairLock" value="true"/>
+        <property name="validationQuery" value="select 1"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="connectionInitSqls" value="set names utf8mb4;" />
+    </bean>
+
+    <!-- Druid连接池 -->
+    <bean name="dataDataSourceWrite" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="net.sf.log4jdbc.DriverSpy"></property>
+        <property name="url" value="${data.url.write}"></property>
+        <property name="username" value="${data.username.write}"></property>
+        <property name="password" value="${data.password.write}"></property>
+        <property name="maxActive" value="200"/>
+        <property name="maxWait" value="60000"/>
+        <property name="poolPreparedStatements" value="true"/>
+        <property name="maxOpenPreparedStatements" value="100"/>
+        <property name="defaultAutoCommit" value="true"/>
+        <property name="filters" value="stat"/>
+        <property name="minEvictableIdleTimeMillis" value="30000"/>
+        <property name="removeAbandonedTimeout" value="600"/>
+        <property name="removeAbandoned" value="true"/>
+        <property name="logAbandoned" value="true"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="useUnfairLock" value="true"/>
+        <property name="validationQuery" value="select 1"/>
+        <property name="connectionInitSqls" value="set names utf8mb4;" />
+    </bean>
+    <!-- Druid连接池 -->
+    <bean name="dataDataSourceRead" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="driverClassName" value="net.sf.log4jdbc.DriverSpy"></property>
+        <property name="url" value="${data.url.read}"></property>
+        <property name="username" value="${data.username.read}"></property>
+        <property name="password" value="${data.password.read}"></property>
+        <property name="maxActive" value="200"/>
+        <property name="maxWait" value="60000"/>
+        <property name="filters" value="stat"/>
+        <property name="poolPreparedStatements" value="true"/>
+        <property name="maxOpenPreparedStatements" value="100"/>
+        <property name="defaultAutoCommit" value="true"/>
+        <property name="minEvictableIdleTimeMillis" value="30000"/>
+        <property name="removeAbandoned" value="true"/>
+        <property name="removeAbandonedTimeout" value="600"/>
+        <property name="logAbandoned" value="true"/>
+        <property name="testWhileIdle" value="true"/>
+        <property name="useUnfairLock" value="true"/>
+        <property name="validationQuery" value="select 1"/>
+        <property name="testOnBorrow" value="true"/>
+        <property name="connectionInitSqls" value="set names utf8mb4;" />
+    </bean>
+
+    <bean id="multipleDataSource" class="com.jdd.fm.core.db.ds.MultipleDataSource">
+        <!-- 默认数据库是写的数据库 -->
+        <property name="defaultTargetDataSource" ref="dataDataSourceWrite"/>
+        <property name="targetDataSources">
+            <map>
+                <entry value-ref="dataSourceWrite" key="dataSourceWrite"/>
+                <entry value-ref="dataSourceRead" key="dataSourceRead"/>
+                <entry value-ref="dataDataSourceWrite" key="dataDataSourceWrite"/>
+                <entry value-ref="dataDataSourceRead" key="dataDataSourceRead"/>
+            </map>
+        </property>
+    </bean>
+    <bean id="sessionFactory"
+          class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="multipleDataSource"/>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">validate</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL5Dialect</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.format_sql">true</prop>
+                <prop key="hibernate.cache.use_query_cache">false</prop>
+                <prop key="hibernate.cache.use_second_level_cache">false</prop>
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.ehcache.EhCacheRegionFactory</prop>
+            </props>
+        </property>
+        <!-- 注解方式配置 -->
+        <property name="packagesToScan">
+            <list>
+                <!--<value>com.jdd.user.dao.mission.pojo</value>
+                <value>com.jdd.user.dao.pojo</value>
+                <value>com.jdd.user.dao.entity</value>-->
+            </list>
+        </property>
+        <!-- hbm方式配置 -->
+        <!--<property name="mappingDirectoryLocations"> <list> <value>classpath:com/agileeagle/gf/pojo/hbm</value>
+            </list> </property> -->
+    </bean>
+    <!-- 配置事务 -->
+    <bean name="transactionManager"
+          class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory"></property>
+    </bean>
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" order="2"/>
+
+</beans>

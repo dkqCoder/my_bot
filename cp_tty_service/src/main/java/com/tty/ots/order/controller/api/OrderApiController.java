@@ -59,7 +59,7 @@ public class OrderApiController {
      * @param userVO 用户信息
      * @return 下单处理结果
      */
-    @Action(value = "207", tokenValidated = true)
+    @Action(value = "14000", tokenValidated = true)
     public ResultModel order(ClientRequestHeader header, Object body, UserVO userVO) {
         ResultBO result = apiSchemeService.order(header, body, userVO.getUserid());
         return ApiHelper.mapToResultModel(result);
