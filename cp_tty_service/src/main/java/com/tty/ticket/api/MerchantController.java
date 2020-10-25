@@ -18,6 +18,7 @@ import com.tty.ticket.service.TicketTicketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Arrays;
@@ -47,6 +48,7 @@ public class MerchantController extends BaseController {
     private TicketConfigService ticketConfigService;
 
     @Autowired
+    @Qualifier("jedisClusterFactory")
     private JedisClusterFactory jedisClusterFactory;
 
     /**

@@ -20,15 +20,12 @@ public interface VerifyCodeCheckService {
 
     Result checkPCQuickRegister(String verifyCode, String mobile, String traceId, ClientRequestHeader header);
 
-    Result checkQuickRegister(String verifyCode, String mobile, String traceId, ClientRequestHeader header);
+    Result checkQuickRegister(String params, ClientRequestHeader header);
 
     Result checkForgetPayPass(String verifyCode, String userId);
 
-    Result checkCmttVerifyCode(String verifyCode, String userId, String mobile, String passWord, String traceId, ClientRequestHeader header, int from);
 
     Result checkWapVerifyCode(String verifyCode, String mobile, String traceId, ClientRequestHeader header);
 
-    Result checkWeChatBindVerifyCode(String verifyCode, String mobile, String traceId);
 
-    Result checkHuaweiVerifyCode(String verifyCode,String mobile,String traceId);
 }

@@ -14,4 +14,10 @@ public interface UserLoginService {
      */
     Result login(String token, String userName, String password, String userId, String uuid, Integer userType, String traceId, ClientRequestHeader header);
 
+    void loginWithNamePwd(String userName, String password, Boolean pwdEncrypted, ClientRequestHeader header, Result result, Integer loginType);
+
+    /**
+     * 1015 选择用户名默认登录
+     */
+    Result chooseUserDefaultLoginAccounts(String userName, String mobile, String uuid, String traceId, ClientRequestHeader header);
 }

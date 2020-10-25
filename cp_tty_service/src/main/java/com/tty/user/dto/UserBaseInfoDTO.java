@@ -1,41 +1,110 @@
 package com.tty.user.dto;
 
-import java.io.Serializable;
+
+import com.alibaba.fastjson.annotation.JSONField;
+
 import java.util.Date;
 
 /**
- * @author zhangdi
- * @date 17/3/30
- * @Description
+ * Created by donne on 17/03/07.
  */
-public class UserBaseInfoDTO implements Serializable{
-    private long userId;
-    private String userName;//用户名
-    private String realName;//真实姓名
-    private int hasNickName;//是否有昵称
-    private String nickName;//昵称
-    private String userFace;//头像
-    private String iDCardNumber; //身份证
-    private String mobile;//手机号
-    private boolean isMobileValied;//手机是否验证
-    private int isPayPwd;//是否已设置支付密码，1：是，0：否
-    private Date registerTime;//注册时间
-    private long userExperience;//用户积分
-    private String userLevel;//用户等级
-    private String levelName;//等级名称
-    private Integer isSignToday;//今日是否签到
-    private Long sign = new Long(0);
-    private Date lastLoginTime;
-    private String thdPartId;//第三方用户ID
-    private String thdPartName;//第三方用户名
-    private String thdPartType;//第三方类别
+public class UserBaseInfoDTO {
 
-    public String getThdPartId() {
-        return thdPartId;
+    /**
+     * n_user_id
+     */
+    private Long userId;
+
+    /**
+     * 用户名
+     */
+    private String loginName;
+
+    /**
+     * 绑定手机号
+     */
+
+    private String mobileNumber;
+
+    /**
+     * 第三方用户名
+     */
+    private String thdPartName;
+
+    /**
+     * 第三方类别
+     */
+    private String thdPartType;
+
+    /**
+     * 注册时间
+     */
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private Date registerTime;
+    @JSONField(format = "yyyy-MM-dd HH:mm:ss")
+    private Date lastLoginTime;
+
+    /**
+     * 渠道代码
+     */
+    private String entranceCode;
+
+    /**
+     * 是否可用
+     */
+    private Integer status;
+
+    /**
+     * 昵称
+     */
+    private String nickName;
+
+    /**
+     * 真实姓名
+     */
+    private String realName;
+
+    private String remark;
+
+    /**
+     * 身份证号码
+     */
+    private String idcardNumber;
+
+    //用户积分
+    private Integer userIntegral;
+    //成长值
+    private Long userGrowUps;
+    //用户等级
+    private Integer userLevel;
+    //打败多少彩友
+    private Double beatInfo;
+    //今日是否签到
+    private Integer isSignInToday;
+
+
+    public Long getUserId() {
+        return userId;
     }
 
-    public void setThdPartId(String thdPartId) {
-        this.thdPartId = thdPartId;
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+
+    public String getLoginName() {
+        return loginName;
+    }
+
+    public void setLoginName(String loginName) {
+        this.loginName = loginName;
+    }
+
+    public String getMobileNumber() {
+        return mobileNumber;
+    }
+
+    public void setMobileNumber(String mobileNumber) {
+        this.mobileNumber = mobileNumber;
     }
 
     public String getThdPartName() {
@@ -54,6 +123,14 @@ public class UserBaseInfoDTO implements Serializable{
         this.thdPartType = thdPartType;
     }
 
+    public Date getRegisterTime() {
+        return registerTime;
+    }
+
+    public void setRegisterTime(Date registerTime) {
+        this.registerTime = registerTime;
+    }
+
     public Date getLastLoginTime() {
         return lastLoginTime;
     }
@@ -62,44 +139,20 @@ public class UserBaseInfoDTO implements Serializable{
         this.lastLoginTime = lastLoginTime;
     }
 
-    public Long getSign() {
-        return sign;
+    public String getEntranceCode() {
+        return entranceCode;
     }
 
-    public void setSign(Long sign) {
-        this.sign = sign;
+    public void setEntranceCode(String entranceCode) {
+        this.entranceCode = entranceCode;
     }
 
-    public long getUserId() {
-        return userId;
+    public Integer getStatus() {
+        return status;
     }
 
-    public void setUserId(long userId) {
-        this.userId = userId;
-    }
-
-    public String getUserName() {
-        return userName;
-    }
-
-    public void setUserName(String userName) {
-        this.userName = userName;
-    }
-
-    public String getRealName() {
-        return realName;
-    }
-
-    public void setRealName(String realName) {
-        this.realName = realName;
-    }
-
-    public int getHasNickName() {
-        return hasNickName;
-    }
-
-    public void setHasNickName(int hasNickName) {
-        this.hasNickName = hasNickName;
+    public void setStatus(Integer status) {
+        this.status = status;
     }
 
     public String getNickName() {
@@ -110,83 +163,67 @@ public class UserBaseInfoDTO implements Serializable{
         this.nickName = nickName;
     }
 
-    public String getUserFace() {
-        return userFace;
+    public String getRealName() {
+        return realName;
     }
 
-    public void setUserFace(String userFace) {
-        this.userFace = userFace;
+    public void setRealName(String realName) {
+        this.realName = realName;
     }
 
-    public String getiDCardNumber() {
-        return iDCardNumber;
+    public String getRemark() {
+        return remark;
     }
 
-    public void setiDCardNumber(String iDCardNumber) {
-        this.iDCardNumber = iDCardNumber;
+    public void setRemark(String remark) {
+        this.remark = remark;
     }
 
-    public String getMobile() {
-        return mobile;
+    public String getIdcardNumber() {
+        return idcardNumber;
     }
 
-    public void setMobile(String mobile) {
-        this.mobile = mobile;
+    public void setIdcardNumber(String idcardNumber) {
+        this.idcardNumber = idcardNumber;
     }
 
-    public boolean isMobileValied() {
-        return isMobileValied;
+    public Integer getUserIntegral() {
+        return userIntegral;
     }
 
-    public void setMobileValied(boolean mobileValied) {
-        isMobileValied = mobileValied;
+    public void setUserIntegral(Integer userIntegral) {
+        this.userIntegral = userIntegral;
     }
 
-    public int getIsPayPwd() {
-        return isPayPwd;
+    public Long getUserGrowUps() {
+        return userGrowUps;
     }
 
-    public void setIsPayPwd(int isPayPwd) {
-        this.isPayPwd = isPayPwd;
+    public void setUserGrowUps(Long userGrowUps) {
+        this.userGrowUps = userGrowUps;
     }
 
-    public Date getRegisterTime() {
-        return registerTime;
-    }
-
-    public void setRegisterTime(Date registerTime) {
-        this.registerTime = registerTime;
-    }
-
-    public long getUserExperience() {
-        return userExperience;
-    }
-
-    public void setUserExperience(long userExperience) {
-        this.userExperience = userExperience;
-    }
-
-    public String getUserLevel() {
+    public Integer getUserLevel() {
         return userLevel;
     }
 
-    public void setUserLevel(String userLevel) {
+    public void setUserLevel(Integer userLevel) {
         this.userLevel = userLevel;
     }
 
-    public String getLevelName() {
-        return levelName;
+    public Double getBeatInfo() {
+        return beatInfo;
     }
 
-    public void setLevelName(String levelName) {
-        this.levelName = levelName;
+    public void setBeatInfo(Double beatInfo) {
+        this.beatInfo = beatInfo;
     }
 
-    public Integer getIsSignToday() {
-        return isSignToday;
+    public Integer getIsSignInToday() {
+        return isSignInToday;
     }
 
-    public void setIsSignToday(Integer isSignToday) {
-        this.isSignToday = isSignToday;
+    public void setIsSignInToday(Integer isSignInToday) {
+        this.isSignInToday = isSignInToday;
     }
 }

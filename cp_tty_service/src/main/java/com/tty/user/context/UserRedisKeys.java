@@ -20,14 +20,14 @@ public class UserRedisKeys {
      * @Author shenwei
      * @Date 2017/3/16 13:43
      * @Description hash key -> userId
-     * value -> com.jdd.user.dao.entity.UserInfoENT
+     * value -> com.tty.user.dao.entity.UserInfoENT
      */
 
     public static final String USER_INFO_KEY_ID = "user:info:userid:%s";
 
     /**
      * hash key -> 用户手机号
-     * value -> com.jdd.user.dao.entity.UserInfoENT
+     * value -> com.tty.user.dao.entity.UserInfoENT
      */
 
     public static final String USRE_INFO_MOBILE_LIST_NUMBER = "user:info:mobile:%s";
@@ -55,7 +55,7 @@ public class UserRedisKeys {
      * @Description user base info hash
      * <p>
      * Hash :  key -> userId
-     * value ->com.jdd.user.dao.entity.UserBaseInfoENT
+     * value ->com.tty.user.dao.entity.UserBaseInfoENT
      */
 
     public static final String USER_BASE_INFO_KEY_ID = "user:baseinfo:userid:%s";
@@ -258,7 +258,7 @@ public class UserRedisKeys {
      * @Author shenwei
      * @Date 2017/3/7 13:40
      * @Description 根据用户名获取用户 param:username
-     * set key -> userId  value -> com.jdd.user.dao.entity.UserInfoENT
+     * set key -> userId  value -> com.tty.user.dao.entity.UserInfoENT
      */
 
     public static final String USER_INFO_NAME_KEY_NAME = "user:info:name:%s";
@@ -546,7 +546,7 @@ public class UserRedisKeys {
     /**
      * 重置身份证信息中未审核
      * $s -> userId
-     * value -> com.jdd.user.dao.entity.UserIdcardResetENT
+     * value -> com.tty.user.dao.entity.UserIdcardResetENT
      */
     public final static String USER_RESET_IDCARDNUM_UNCHECK = "user:reset_idcardnum_uncheck:%s";
 

@@ -8,12 +8,12 @@ import com.jdd.fm.core.model.ClientRequestHeader;
 import com.jdd.fm.core.redis.JedisClusterFactory;
 import com.jdd.fm.core.utils.DateUtil;
 import com.jdd.fm.core.utils.GfJsonUtil;
-import com.tty.common.utils.MobileUtil;
 import com.tty.common.utils.Result;
+import com.tty.user.common.utils.MobileUtil;
 import com.tty.user.context.UserContext;
 import com.tty.user.context.UserRedisKeys;
-import com.tty.user.dao.ent.UserInfoENT;
-import com.tty.user.params.LoginSmsParams;
+import com.tty.user.controller.model.params.LoginSmsParams;
+import com.tty.user.dao.entity.UserInfoENT;
 import com.tty.user.service.TokenService;
 import com.tty.user.service.UserInfoService;
 import com.tty.user.service.UserSmsLoginService;
@@ -61,7 +61,7 @@ public class UserSmsLoginServiceImpl implements UserSmsLoginService {
         if (result.getCode() < 0) {
             return result;
         }
-        /*List<UserInfoENT> list = userInfoService.refreshUserInfoByMobile(mobile);
+        List<UserInfoENT> list = userInfoService.refreshUserInfoByMobile(mobile);
         if (CollectionUtils.isEmpty(list)) {
             result.setCode(Result.ERROR);
             result.setMsg("该手机号没有绑定任何账号,请联系客服或进行注册");
@@ -71,8 +71,8 @@ public class UserSmsLoginServiceImpl implements UserSmsLoginService {
         if (hasMoreThanOneUser) {
             userInfoService.userListByLoginTime(list, result);
             return result;
-        }*/
-        /*UserInfoENT ent = userInfoService.getCurrentUserInfo(String.valueOf(list.get(0).getUserId()));
+        }
+        UserInfoENT ent = userInfoService.getCurrentUserInfo(String.valueOf(list.get(0).getUserId()));
         if (ent == null) {
             result.setCode(Result.ERROR);
             result.setMsg("该手机号没有绑定任何账号,请联系客服或进行注册");
@@ -86,7 +86,7 @@ public class UserSmsLoginServiceImpl implements UserSmsLoginService {
         if (isUserFreeze(String.valueOf(ent.getUserId()), result)) {
             return result;
         }
-        tokenService.saveToken(ent.getLoginName(), ent.getUserId().toString(), ent.getMobileNumber(), 1, header, "短信验证码", result, 1);*/
+        tokenService.saveToken(ent.getLoginName(), ent.getUserId().toString(), ent.getMobileNumber(), 1, header, "短信验证码", result, 1);
         return result;
     }
 
@@ -126,7 +126,7 @@ public class UserSmsLoginServiceImpl implements UserSmsLoginService {
         }
         Boolean hasMoreThanOneUser = list.size() > 1;
         if (hasMoreThanOneUser) {
-            //userInfoService.userListByLoginTime(list, result);
+            userInfoService.userListByLoginTime(list, result);
             return result;
         }
         UserInfoENT ent = userInfoService.getCurrentUserInfo(String.valueOf(list.get(0).getUserId()));

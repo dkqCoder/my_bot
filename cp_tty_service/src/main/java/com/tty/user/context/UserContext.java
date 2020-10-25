@@ -38,8 +38,8 @@ public class UserContext {
     public final static int USER_IDCARD_STATUS_PASS = 1;
     public final static int USER_IDCARD_STATUS_REFUSE = 2;
 
-    public final static String REFUSE_MESSAGE = "您的身份证申诉失败，您可访问金山彩票客户端查看详情。如有疑问请您联系在线客服";
-    public final static String ACCEPT_MESSAGE = "您的身份证申诉已通过，您可访问金山彩票客户端查看详情";
+    public final static String REFUSE_MESSAGE = "您的身份证申诉失败，您可访问天天盈彩票客户端查看详情。如有疑问请您联系在线客服";
+    public final static String ACCEPT_MESSAGE = "您的身份证申诉已通过，您可访问天天盈彩票客户端查看详情";
 
     //打败多少彩友最小值
     public final static Double USER_BEATINFO_MIN = 0.1;
@@ -198,8 +198,8 @@ public class UserContext {
     public final static String USER_REGISTER_SEND_SMS_VALUE = "true";
 
     // 注册成功短信内容
-    public final static String USER_REGISTER_APP_SMS_CONTENT = "感谢注册金山奖多多，新人礼包已到账，请登录APP至我的-福利任务领取。";
-    public final static String USER_REGISTER_PC_SMS_CONTENT = "感谢注册金山奖多多，出票更安全，派奖更效率！下载金山彩票APP，中奖信息不错过: r.jdd.com/d ";
+    public final static String USER_REGISTER_APP_SMS_CONTENT = "感谢注册天天盈奖多多，新人礼包已到账，请登录APP至我的-福利任务领取。";
+    public final static String USER_REGISTER_PC_SMS_CONTENT = "感谢注册天天盈奖多多，出票更安全，派奖更效率！下载天天盈彩票APP，中奖信息不错过: r.jdd.com/d ";
 
     /**
      * @Author shenwei

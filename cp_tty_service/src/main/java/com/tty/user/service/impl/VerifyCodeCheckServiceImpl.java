@@ -4,10 +4,17 @@ package com.tty.user.service.impl;/**
 
 import com.jdd.fm.core.model.ClientRequestHeader;
 import com.jdd.fm.core.redis.JedisClusterFactory;
+import com.jdd.fm.core.utils.GfJsonUtil;
 import com.tty.common.utils.Result;
+import com.tty.user.common.utils.DateUtils;
+import com.tty.user.common.utils.HttpUtils;
+import com.tty.user.common.utils.MobileUtil;
+import com.tty.user.context.UserContext;
 import com.tty.user.context.UserRedisKeys;
 import com.tty.user.context.VerifyCodeEnum;
-import com.tty.user.dao.ent.UserInfoENT;
+import com.tty.user.controller.model.params.QuickRegisterParams;
+import com.tty.user.controller.model.result.UserRegisterResult;
+import com.tty.user.dao.entity.UserInfoENT;
 import com.tty.user.service.SmsService;
 import com.tty.user.service.UserInfoService;
 import com.tty.user.service.UserLoginService;
@@ -18,7 +25,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -33,8 +39,6 @@ public class VerifyCodeCheckServiceImpl implements VerifyCodeCheckService {
 
     private final Logger logger = LoggerFactory.getLogger(VerifyCodeCheckServiceImpl.class);
     @Autowired
-    private ThreadPoolTaskExecutor threadPoolTaskExecutor;
-    @Autowired
     @Qualifier("userRedis")
     private JedisClusterFactory userRedis;
     @Autowired
@@ -43,12 +47,6 @@ public class VerifyCodeCheckServiceImpl implements VerifyCodeCheckService {
     private UserLoginService userLoginService;
     @Autowired
     private SmsService smsService;
-   /* @Autowired
-    private DubboActivityBaseInfoService dubboActivityBaseInfoService;
-    @Autowired
-    private UserEntranceDenyTimeDao userEntranceDenyTimeDao;
-    @Autowired
-    private UserMobileWhitelistDao userMobileWhitelistDao;*/
 
     /**
      * @Author shenwei
@@ -98,7 +96,7 @@ public class VerifyCodeCheckServiceImpl implements VerifyCodeCheckService {
         Result result = verifyCheck(null, mobile, verifyCode, verifyCodeKey, verifyErrorCountKey, null);
         if (Objects.equals(result.getCode(), Result.SUCCESS)) {
             List<UserInfoENT> userInfoENTS = userInfoService.getUserInfoByMobile(mobile);
-            //userInfoService.userListByLoginTime(userInfoENTS, result);
+            userInfoService.userListByLoginTime(userInfoENTS, result);
         }
         return result;
     }
@@ -133,12 +131,23 @@ public class VerifyCodeCheckServiceImpl implements VerifyCodeCheckService {
      * @Description 1034 快速注册校验
      */
     @Override
-    public Result checkQuickRegister(String verifyCode, String mobile, String traceId, ClientRequestHeader header) {
+    public Result checkQuickRegister(String params, ClientRequestHeader header) {
+        String traceId = header.getTraceID();
         Result result = new Result();
-        String cachedPass = userRedis.get(String.format(UserRedisKeys.USER_REGISTER_PWD, mobile));
-        if (StringUtils.isBlank(cachedPass)) {
+        QuickRegisterParams quickRegisterParams = GfJsonUtil.parseObject(params, QuickRegisterParams.class);
+        if (quickRegisterParams == null) {
+            return getFailResult();
+        }
+        String mobile = quickRegisterParams.getMobile();
+        String verifyCode = quickRegisterParams.getMobile();
+        if (StringUtils.isEmpty(mobile)) {
             result.setCode(Result.ERROR);
-            result.setMsg("密码遗失,请重新注册");
+            result.setMsg("手机号不能为空");
+            return result;
+        }
+        if (StringUtils.isEmpty(verifyCode)) {
+            result.setCode(Result.ERROR);
+            result.setMsg("手机验证码不能为空");
             return result;
         }
         String verifyCodeKey = String.format(UserRedisKeys.USER_QUICK_REGISTER_VERIFY_CODE, mobile);
@@ -150,23 +159,17 @@ public class VerifyCodeCheckServiceImpl implements VerifyCodeCheckService {
         if (userNameExists(mobile)) {
             return getNameExistsResult(result);
         }
-        Long userId = userInfoService.registerByUserNameAndPwd(mobile, mobile, header.getPlatformCode(), cachedPass, traceId, header, result);
-        /*if (userId > 0) {
-            threadPoolTaskExecutor.execute(() -> {
-                if (userEntranceDenyTimeDao.notInEntranceDenyTimeRegionWithcmdName(Optional.ofNullable(header.getCmdName()).orElse(""))) {
-                    UserMobileWhitelistENT ent = new UserMobileWhitelistENT();
-                    ent.setMobile(mobile);
-                    userMobileWhitelistDao.saveUserMobileWhitelist(ent);
-                }
-            });
+        // 手机验证码注册时密码为null
+        Long userId = userInfoService.registerByUserNameAndPwd(mobile, mobile, header.getPlatformCode(), null, traceId, header, result);
+        if (userId > 0) {
             UserRegisterResult userRegisterResult = new UserRegisterResult();
             userRegisterResult.setUserId(HttpUtils.encodedId(userId));
-            userRegisterResult.setPassWord(cachedPass);
+            userRegisterResult.setPassWord(null);
             result.setCode(Result.SUCCESS);
             result.setData(userRegisterResult);
             result.setMsg("注册成功");
             return result;
-        }*/
+        }
         result.setCode(Result.ERROR);
         result.setMsg("注册失败,请重新尝试");
         return result;
@@ -188,65 +191,6 @@ public class VerifyCodeCheckServiceImpl implements VerifyCodeCheckService {
         return verifyCheck(null, null, verifyCode, verifyCodeKey, verifyErrorCountKey, VerifyCodeEnum.FORGETPAYPASS);
     }
 
-    /**
-     * @Author shenwei
-     * @Date 2017/3/31 19:51
-     * @Description 1021 猎豹登录验证码校验
-     */
-    @Override
-    public Result checkCmttVerifyCode(String verifyCode, String userId, String mobile, String passWord, String traceId, ClientRequestHeader header, int from) {
-        Result result = new Result();
-        String verifyCodeKey = String.format(UserRedisKeys.USER_CMTT_VERIFY_CODE, mobile);
-        String verifyErrorCountKey = String.format(UserRedisKeys.USER_CMTT_ERROR_COUNT, mobile);
-        result = verifyCheck(userId, mobile, verifyCode, verifyCodeKey, verifyErrorCountKey, VerifyCodeEnum.CMMTLOGIN);
-        if (result.getCode() < 0) {
-            return result;
-        }
-        if (userNameExists(mobile)) {
-            return getNameExistsResult(result);
-        }
-        if (userInfoService.registerByUserNameAndPwd(mobile, mobile, header.getCmdName(), passWord, traceId, header, result) > 0) {
-            /*if (from == 0 || from == 2) {
-                smsService.sendWapRandomPass(0, mobile, userId, passWord, traceId);
-            }
-            if (from == 1) {
-                TokenLoginResult tokenLoginResult = (TokenLoginResult) result.getData();
-                TokenLoginResultExtModel tokenLoginResultExtModel = new TokenLoginResultExtModel();
-                tokenLoginResultExtModel.setId(tokenLoginResult.getId());
-                tokenLoginResultExtModel.setMobile(tokenLoginResult.getMobile());
-                tokenLoginResultExtModel.setToken(tokenLoginResult.getToken());
-                tokenLoginResultExtModel.setUserName(tokenLoginResult.getUserName());
-                tokenLoginResultExtModel.setUserType(tokenLoginResult.getUserType());
-                String randomNumber = "", issueNumber = "";
-
-                List<UserInfoENT> userList = userInfoService.getUserInfoByMobile(mobile);
-                Long userID = userList.get(0).getUserId();
-                String base64UserID = new BASE64Encoder().encode(userID.toString().getBytes());
-                RequestHeaderDTO colorBallRequest = new RequestHeaderDTO();
-                BeanUtils.copy(header, colorBallRequest);
-                colorBallRequest.setUserID(base64UserID);
-                Response response = dubboActivityBaseInfoService.getFreeDoubleColorBall(colorBallRequest);
-                logger.info("checkCmttVerifyCodeAndSend ret:{}", base64UserID);
-                if (response != null && response.getData() != null && response.getCode() == 0) {
-                    Map<String, Object> jObject = (HashMap) response.getData();
-                    randomNumber = jObject.get("randomNumber").toString();
-                    issueNumber = jObject.get("issueNumber").toString();
-                    tokenLoginResultExtModel.setNumber(randomNumber);
-                    tokenLoginResultExtModel.setIssueNumber(issueNumber);
-                }
-
-                result.setData(tokenLoginResultExtModel);
-                String messageBody = String.format("【奖多多】感谢注册金山奖多多，新人礼包已到账，请登录APP至我的-福利任务领取。");
-                smsService.sendSMS(mobile, messageBody, traceId);
-            }*/
-            return result;
-
-        } else {
-            result.setCode(Result.ERROR);
-            result.setMsg(Result.MSG_ERROR_DESC);
-            return result;
-        }
-    }
 
     private Result getNameExistsResult(Result result) {
         result.setCode(Result.ERROR);
@@ -274,7 +218,7 @@ public class VerifyCodeCheckServiceImpl implements VerifyCodeCheckService {
                 result.setMsg("该手机号已经注册过账号");
                 return result;
             }
-            /*String randomPass = MobileUtil.getRandomPass();
+            String randomPass = MobileUtil.getRandomPass();
             Long userId = userInfoService.registerByUserNameAndPwd(mobile, mobile, header.getCmdName(), randomPass, traceId, header, result);
             if (userId > 0) {
                 userLoginService.loginWithNamePwd(mobile, randomPass, false, header, result, 1);
@@ -284,7 +228,7 @@ public class VerifyCodeCheckServiceImpl implements VerifyCodeCheckService {
             } else {
                 result.setCode(Result.ERROR);
                 result.setMsg(Result.MSG_ERROR_DESC);
-            }*/
+            }
             return result;
         }
         if (userInfoENTS.size() > 1) {
@@ -292,32 +236,8 @@ public class VerifyCodeCheckServiceImpl implements VerifyCodeCheckService {
             result.setMsg("该手机号绑定多个账号,请使用短信登录");
             return result;
         }
-        //userLoginService.loginWithNamePwd(userInfoENTS.get(0).getLoginName(), userInfoENTS.get(0).getPassword(), true, header, result, 0);
+        userLoginService.loginWithNamePwd(userInfoENTS.get(0).getLoginName(), userInfoENTS.get(0).getPassword(), true, header, result, 0);
         return result;
-    }
-
-    /**
-     * @Author shenwei
-     * @Date 2017/6/28 10:49
-     * @Description 20004 现有账号绑定微信验证码校验
-     */
-    @Override
-    public Result checkWeChatBindVerifyCode(String verifyCode, String mobile, String traceId) {
-        String verifyCodeKey = String.format(UserRedisKeys.USER_WECHAT_BIND_VERIFY_CODE, mobile);
-        String verifyErrorCountKey = String.format(UserRedisKeys.USER_WECHAT_BIND_ERROR_COUNT, mobile);
-        return verifyCheck(null, mobile, verifyCode, verifyCodeKey, verifyErrorCountKey, VerifyCodeEnum.WECHATBIND);
-    }
-
-    /**
-     * @Author shenwei
-     * @Date 2017/10/26 11:08
-     * @Description 华为验证码校验
-     */
-    @Override
-    public Result checkHuaweiVerifyCode(String verifyCode, String mobile, String traceId) {
-        String verifyCodeKey = String.format(UserRedisKeys.USER_HUAWEI_VERIFY_CODE_MOBILE, mobile);
-        String verifyErrorCountKey = String.format(UserRedisKeys.USER_HUAWEI_ERROR_COUNT_MOBILE, mobile);
-        return verifyCheck(null, mobile, verifyCode, verifyCodeKey, verifyErrorCountKey, VerifyCodeEnum.HUAWEI);
     }
 
     /**
@@ -343,7 +263,7 @@ public class VerifyCodeCheckServiceImpl implements VerifyCodeCheckService {
         }
         Integer errorCount = userRedis.get(verifyErrorCountKey) == null ? 0 : Integer.parseInt(userRedis.get(verifyErrorCountKey));
         errorCount++;
-        /*userRedis.set(verifyErrorCountKey, errorCount.toString());
+        userRedis.set(verifyErrorCountKey, errorCount.toString());
         userRedis.expire(verifyCodeKey, Integer.valueOf(DateUtils.getSecondsToTomorrow().toString()));
         if (errorCount <= UserContext.VERIFY_FAIL_PER_MAX) {
             result.setCode(Result.ERROR);
@@ -353,7 +273,7 @@ public class VerifyCodeCheckServiceImpl implements VerifyCodeCheckService {
             userRedis.del(verifyErrorCountKey);
             result.setCode(Result.ERROR);
             result.setMsg("验证失败" + errorCount + "次,请重新获取验证码");
-        }*/
+        }
         return result;
     }
 
@@ -375,5 +295,12 @@ public class VerifyCodeCheckServiceImpl implements VerifyCodeCheckService {
             return false;
         }
         return true;
+    }
+
+    private Result getFailResult() {
+        Result result = new Result();
+        result.setCode(Result.ERROR);
+        result.setMsg(Result.MSG_ERROR_DESC);
+        return result;
     }
 }

@@ -5,11 +5,11 @@ package com.tty.user.service.impl;/**
 import com.jdd.fm.core.db.ds.DataSource;
 import com.jdd.fm.core.model.ClientRequestHeader;
 import com.tty.common.utils.Result;
-import com.tty.user.dao.ent.UserInfoENT;
-import com.tty.user.service.TokenService;
-import com.tty.user.service.UserInfoService;
-import com.tty.user.service.UserLoginService;
-import com.tty.user.service.UserMobileLoginService;
+import com.tty.user.common.utils.HttpUtils;
+import com.tty.user.controller.model.result.TokenLoginResult;
+import com.tty.user.dao.UserInfoDao;
+import com.tty.user.dao.entity.UserInfoENT;
+import com.tty.user.service.*;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -19,6 +19,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -38,7 +39,8 @@ public class UserMobileLoginServiceImpl implements UserMobileLoginService {
     private TokenService tokenService;
     @Autowired
     private UserLoginService userLoginService;
-
+    @Autowired
+    private UserInfoDao userInfoDao;
 
     /**
      * @Author shenwei
@@ -48,8 +50,7 @@ public class UserMobileLoginServiceImpl implements UserMobileLoginService {
     public Result login(String mobile, String passWord, String token, Integer userType, String traceId, ClientRequestHeader header, String thirdId) {
         Result result = new Result();
         Boolean carryToken = StringUtils.isNotBlank(token);
-        /*Boolean fromWeChat = LoginTypeEnum.WECHAT.getValue().equals(userType);
-        Boolean fromXiaoMi = LoginTypeEnum.MI.getValue().equals(userType);
+
         if (carryToken) {
             result = tokenService.verifyToken(token, userType, header.getUuid());
             if (result.getCode() < 0) {
@@ -60,10 +61,10 @@ public class UserMobileLoginServiceImpl implements UserMobileLoginService {
                 if (StringUtils.isBlank(thirdId)) {
                     TokenLoginResult tokenLoginResult = (TokenLoginResult) result.getData();
                     userId = Long.valueOf(HttpUtils.decode(tokenLoginResult.getId()));
-                    publicCommonActiveMqUtil.reportUserLoginMission(userId, traceId);
+                    //publicCommonActiveMqUtil.reportUserLoginMission(userId, traceId);
                 } else {
                     userId = Long.valueOf(HttpUtils.decode(header.getUserID()));
-                    publicCommonActiveMqUtil.reportUserLoginMission(userId, traceId);
+                    //publicCommonActiveMqUtil.reportUserLoginMission(userId, traceId);
                 }
 
                 threadPoolTaskExecutor.execute(() -> {
@@ -72,26 +73,6 @@ public class UserMobileLoginServiceImpl implements UserMobileLoginService {
                 return result;
             }
         }
-        if (fromWeChat) {
-            if (StringUtils.isBlank(thirdId)) {
-                result.setCode(Result.ERROR);
-                result.setMsg("未知微信用户");
-                logger.error("第三方用户ID不存在 traceId:{}", traceId);
-                return result;
-            }
-            weChatLoginService.loginWithWeChat(thirdId, mobile, traceId, header, result);
-            return result;
-        }
-        if (fromXiaoMi) {
-            if (StringUtils.isBlank(thirdId)) {
-                result.setCode(Result.ERROR);
-                result.setMsg("未知小米用户");
-                logger.error("小米用户ID不存在 traceId:{}", traceId);
-                return result;
-            }
-            xiaoMiLoginService.loginWithXiaoMi(thirdId, mobile, traceId, header, result);
-            return result;
-        }*/
         return loginWithMobile(mobile, passWord, traceId, header);
     }
 
@@ -119,7 +100,7 @@ public class UserMobileLoginServiceImpl implements UserMobileLoginService {
             if (mobile.equals(userInfoENT.getMobileNumber())) {
                 loginType = 1;  //用户名(mobile变量)和手机号相同，认为是手机号登录
             }
-            //userLoginService.loginWithNamePwd(mobile, passWord, false, header, result, loginType);
+            userLoginService.loginWithNamePwd(mobile, passWord, false, header, result, loginType);
             return result;
         }
         List<UserInfoENT> list = userInfoService.getUserInfoByMobile(mobile);
@@ -129,13 +110,13 @@ public class UserMobileLoginServiceImpl implements UserMobileLoginService {
             return result;
         }
         if (list.size() == 1) {
-            //userLoginService.loginWithNamePwd(list.get(0).getLoginName(), passWord, false, header, result, 1);
+            userLoginService.loginWithNamePwd(list.get(0).getLoginName(), passWord, false, header, result, 1);
             return result;
         }
         String defaultName = userInfoService.getUserDefaultName(mobile, traceId);
         //默认用户名不存在则进行多账户验证,如果不存在则手机号作为用户名登录验证 存在提示短信验证码登录
         if (StringUtils.isNotBlank(defaultName)) {
-            //userLoginService.loginWithNamePwd(defaultName, passWord, false, header, result, 2);
+            userLoginService.loginWithNamePwd(defaultName, passWord, false, header, result, 2);
             return result;
         }
         result.setCode(Result.ERROR);
@@ -158,22 +139,22 @@ public class UserMobileLoginServiceImpl implements UserMobileLoginService {
             result = tokenService.verifyToken(token, userType, header.getUuid());
             if (result.getCode() < 0) {
                 return result;
-            } /*else {
+            } else {
                 //上报登录积分任务
                 Long userId;
                 if (StringUtils.isBlank(thirdId)) {
                     TokenLoginResult tokenLoginResult = (TokenLoginResult) result.getData();
                     userId = Long.valueOf(HttpUtils.decode(tokenLoginResult.getId()));
-                    publicCommonActiveMqUtil.reportUserLoginMission(userId, traceId);
+                    //publicCommonActiveMqUtil.reportUserLoginMission(userId, traceId);
                 } else {
                     userId = Long.valueOf(HttpUtils.decode(header.getUserID()));
-                    publicCommonActiveMqUtil.reportUserLoginMission(userId, traceId);
+                    //publicCommonActiveMqUtil.reportUserLoginMission(userId, traceId);
                 }
                 threadPoolTaskExecutor.execute(() -> {
                     userInfoDao.updateUserLastLoginTime(String.valueOf(userId), new Date());
                 });
                 return result;
-            }*/
+            }
         }
         return loginWithOnlyMobile(mobile, passWord, traceId, header);
     }
@@ -203,13 +184,13 @@ public class UserMobileLoginServiceImpl implements UserMobileLoginService {
             return result;
         }
         if (list.size() == 1) {
-            //userLoginService.loginWithNamePwd(list.get(0).getLoginName(), passWord, false, header, result, 0);
+            userLoginService.loginWithNamePwd(list.get(0).getLoginName(), passWord, false, header, result, 0);
             return result;
         }
         String defaultName = userInfoService.getUserDefaultName(mobile, traceId);
         //默认用户名不存在则进行多账户验证,如果不存在则手机号作为用户名登录验证 存在提示短信验证码登录
         if (StringUtils.isNotBlank(defaultName)) {
-            //userLoginService.loginWithNamePwd(defaultName, passWord, false, header, result, 0);
+            userLoginService.loginWithNamePwd(defaultName, passWord, false, header, result, 0);
             return result;
         }
         result.setCode(Result.ERROR);

@@ -16,7 +16,8 @@
     <import resource="app-spring-bean-tty.xml"/>
     <import resource="classpath:fm/spring-ehcache.xml" />
 
-    <context:component-scan base-package="com.tty.user">
+<!--    <context:component-scan base-package="com.tty.user,com.tty.sms,com.tty.push,com.tty.ots.trade.outservice">-->
+    <context:component-scan base-package="com.tty">
         <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
     </context:component-scan>
 
@@ -29,12 +30,15 @@
                      order="1"/>
     </aop:config>
 
-    <bean id="scannerConfig" class="com.jdd.fm.core.annotations.scn.Scanner" init-method="init">
-        <property name="packageName" value="com.jdd.user.controller.api" />
-    </bean>
+    <bean class="com.jdd.fm.core.utils.SpringContextUtil" lazy-init="false"/>
 
     <bean id="initConfig" class="com.jdd.fm.core.servlet.InitConfig" init-method="init">
-        <property name="initPackge" value="${user.initPackge}" />
+        <property name="initPackge" value="com.tty" />
     </bean>
+
+    <bean id="scannerConfig" class="com.jdd.fm.core.annotations.scn.Scanner" init-method="init">
+        <property name="packageName" value="com.tty" />
+    </bean>
+
 
 </beans>
