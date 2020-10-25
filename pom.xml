@@ -413,9 +413,9 @@
             <version>${hystrix.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.jdd</groupId>
+            <groupId>com.cp.tty</groupId>
             <artifactId>fm_core</artifactId>
-            <version>4.3.0</version>
+            <version>1.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
 </project>
