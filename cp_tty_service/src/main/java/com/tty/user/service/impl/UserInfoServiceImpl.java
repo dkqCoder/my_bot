@@ -22,6 +22,7 @@ import com.tty.user.context.LoginTypeEnum;
 import com.tty.user.context.UserContext;
 import com.tty.user.context.UserRedisKeys;
 import com.tty.user.context.VerifyCodeEnum;
+import com.tty.user.controller.model.params.PayPassParams;
 import com.tty.user.controller.model.result.UserListDTO;
 import com.tty.user.dao.UserBaseInfoDao;
 import com.tty.user.dao.UserIdcardResetDao;
@@ -364,7 +365,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     @DataSource(name = DataSource.DATA_SOURCE_WRITE)
     @Transactional
     @Override
-    public Result bindUserMobile(String userId, String verifyCode, String traceId, ClientRequestHeader header, Integer type) {
+    public Result bindUserMobile(String userId,String mobile, String verifyCode, String traceId, ClientRequestHeader header) {
         Result result = new Result();
         UserInfoENT userInfoENT = getCurrentUserInfo(userId);
         if (userInfoENT == null) {
@@ -372,16 +373,10 @@ public class UserInfoServiceImpl implements UserInfoService {
             result.setData("当前用户不存在");
             return result;
         }
-        if (type != null && type == 1) {//原手机号校验
-            result = verifyCodeCheckService.checkUserOldMobile(verifyCode, null, userId);
-            return result;
-        }
         result = verifyCodeCheckService.checkBindUserMobile(verifyCode, null, userId);
         if (result.getCode() < 0) {
             return result;
         }
-        String mobileKey = String.format(UserRedisKeys.USER_BIND_MOBILE_VERIFY_CODE_MOBILE, userId, verifyCode);
-        String mobile = userRedis.get(mobileKey);
         List<UserInfoENT> userInfoENTS = getUserInfoByMobile(mobile);
         if (CollectionUtils.isNotEmpty(userInfoENTS)) {
             result.setCode(Result.ERROR);
@@ -431,7 +426,9 @@ public class UserInfoServiceImpl implements UserInfoService {
         Result result = new Result();
         UserInfoENT userInfoENT = getCurrentUserInfo(userId);
         try {
-            if (!userInfoENT.getPassword().equals(MD5Utils.encrypt(oldPwd, UserContext.MD5Key))) {
+            if (StringUtils.isEmpty(userInfoENT.getPassword())) { // 密码为空时为初使状态不校验原密码
+
+            } else if (!userInfoENT.getPassword().equals(MD5Utils.encrypt(oldPwd, UserContext.MD5Key))) {
                 result.setCode(Result.ERROR);
                 result.setMsg("原密码错误,请重新输入");
                 result.setData("原密码错误,请重新输入");
@@ -461,57 +458,20 @@ public class UserInfoServiceImpl implements UserInfoService {
         }
     }
 
-    /**
-     * @Author shenwei
-     * @Date 2017/3/14 10:57
-     * @Description 提现密码修改
-     */
     @DataSource(name = DataSource.DATA_SOURCE_WRITE)
     @Transactional
     @Override
-    public Result changeUserPayPassword(String userId, String oldPwd, String newPwd, String traceId) {
-        Result result = new Result();
-        try {
-            UserInfoENT userInfoENT = getCurrentUserInfo(userId);
-            //首次写入支付密码
-            String encryptPass = MD5Utils.encrypt(newPwd, UserContext.MD5Key);
-            if (StringUtils.isEmpty(userInfoENT.getPayPassword())) {
-                userInfoDao.updateUserPayPass(userId, encryptPass);
-            } else {
-                if (!oldPwd.equals(userInfoENT.getPayPassword())) {
-                    result.setCode(Result.ERROR);
-                    result.setMsg("对不起,原支付密码输入不正确");
-                    return result;
-                }
-                if (userInfoDao.updateUserPayPass(userId, encryptPass)) {
-                    result.setCode(Result.SUCCESS);
-                    result.setMsg("支付密码修改成功");
-                    return result;
-                } else {
-                    logger.error("支付密码修改失败,userId:{},traceId:{}", userId, traceId);
-                    result.setCode(Result.ERROR);
-                    result.setMsg("支付密码修改失败");
-                    return result;
-                }
-            }
-            return result;
-        } catch (Exception e) {
-            logger.error("支付密码修改失败,userId:{},traceId:{},stackTrace:{}", userId, traceId, LogExceptionStackTrace.erroStackTrace(e));
-            result.setCode(Result.ERROR);
-            result.setMsg("支付密码修改失败");
-        }
-        return result;
-    }
-
-    @DataSource(name = DataSource.DATA_SOURCE_WRITE)
-    @Transactional
-    @Override
-    public Result changeUserPayPassword(String userId, String newPwd, String traceId) {
+    public Result changeUserPayPassword(String userId, String newPwd, String verifyCode, String traceId) {
         Result result = new Result();
         try {
             if (StringUtils.isEmpty(newPwd)) {
                 result.setCode(Result.ERROR);
                 result.setMsg("密码不能为空");
+                return result;
+            }
+            if (StringUtils.isEmpty(verifyCode)) {
+                result.setCode(Result.ERROR);
+                result.setMsg("短信验证码不能为空");
                 return result;
             }
             UserInfoENT userInfo = getCurrentUserInfo(userId);
@@ -520,12 +480,15 @@ public class UserInfoServiceImpl implements UserInfoService {
                 result.setMsg("未能获取到用户基本信息");
                 return result;
             }
-//            未成功校验手机验证码,请重新获取验证码
-            String value = userRedis.get(String.format(UserRedisKeys.USER_FORGET_PAYPASS_VERIFY_CODE, userId));
-            //判断有值就表示验证通过
-            if (StringUtils.isEmpty(value)) {
+            String mobile = userInfo.getMobileNumber();
+            if (StringUtils.isEmpty(mobile)) {
                 result.setCode(Result.ERROR);
-                result.setMsg("未获取到验证通过状态");
+                result.setMsg("用户未绑定手机");
+                return result;
+            }
+            // 验证短信验证码
+            result = verifyCodeCheckService.checkForgetPayPass(verifyCode, mobile);
+            if (result.getCode() < 0) {
                 return result;
             }
             updateUserPayPass(userId, newPwd, result, traceId);
@@ -571,7 +534,7 @@ public class UserInfoServiceImpl implements UserInfoService {
             return result;
         }
         UserBaseInfoENT userBaseInfoENT = getCurrentUserBaseInfo(userId);
-        if (StringUtils.isNotBlank(userBaseInfoENT.getNickName()) && !("jdd" + userId).equals(userBaseInfoENT.getNickName())) {
+        if (StringUtils.isNotBlank(userBaseInfoENT.getNickName()) && !("tty" + userId).equals(userBaseInfoENT.getNickName())) {
             result.setMsg("昵称只能修改一次");
             return result;
         }

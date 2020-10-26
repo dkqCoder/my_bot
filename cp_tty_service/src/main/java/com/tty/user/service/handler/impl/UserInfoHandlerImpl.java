@@ -80,10 +80,6 @@ public class UserInfoHandlerImpl implements UserInfoHandler {
     public Result getBindMobileVerifyCode(String traceId, String userID, String params) {
         Result result = new Result();
         BindMobileVerifyParam bindMobileVerifyParam = GfJsonUtil.parseObject(params, BindMobileVerifyParam.class);
-        if (bindMobileVerifyParam.getType() != null && bindMobileVerifyParam.getType() == 1) {
-            String oldMobile = bindMobileVerifyParam.getOldMobile();
-            return verifyCodeService.getVerifyCode(userID, "", VerifyCodeEnum.VALIDATEOLDMOBILE, traceId, oldMobile);
-        }
         if (bindMobileVerifyParam == null) {
             logger.error("绑定手机获取验证码失败,参数错误,userId:{},params:{},traceId:{}", userID, params, traceId);
             return getFailResult();
@@ -124,7 +120,22 @@ public class UserInfoHandlerImpl implements UserInfoHandler {
             result.setMsg("参数格式错误");
             return result;
         }
-        return userInfoService.bindUserMobile(userID, bindMobileParams.getVerifyCode(), traceId, header, bindMobileParams.getType());
+        if (StringUtils.isBlank(bindMobileParams.getVerifyCode())) {
+            result.setCode(Result.ERROR);
+            result.setMsg("验证码不能为空");
+            return result;
+        }
+        if (StringUtils.isBlank(bindMobileParams.getMobile())) {
+            result.setCode(Result.ERROR);
+            result.setMsg("号码不能为空");
+            return result;
+        }
+        if (!MobileUtil.isMobileNO(bindMobileParams.getMobile())) {
+            result.setCode(Result.ERROR);
+            result.setMsg("手机号码格式不正确");
+            return result;
+        }
+        return userInfoService.bindUserMobile(userID, bindMobileParams.getMobile(), bindMobileParams.getVerifyCode(), traceId, header);
     }
 
     /**
@@ -163,7 +174,7 @@ public class UserInfoHandlerImpl implements UserInfoHandler {
         }
         String oldPwd = passwordParams.getOldPw();
         String newPwd = passwordParams.getNewPw();
-        if (StringUtils.isEmpty(oldPwd) || StringUtils.isEmpty(newPwd)) {
+        if (StringUtils.isEmpty(newPwd)) {
             result.setCode(Result.ERROR);
             result.setMsg("密码不能为空");
             return result;
@@ -211,54 +222,43 @@ public class UserInfoHandlerImpl implements UserInfoHandler {
             logger.error("修改密码失败,params:{} traceId:{}", params, traceId);
             return getFailResult();
         }
-        Boolean needCheckValidateCode = false;
-        if (resetPwdParam.getType() == null || resetPwdParam.getType() == 0) {
-            needCheckValidateCode = true;
-        }
-        if (StringUtils.isBlank(resetPwdParam.getPassword())) {
+
+        if (StringUtils.isBlank(resetPwdParam.getNewPw())) {
             logger.error("密码不能为空,params:{} traceId:{}", params, traceId);
             result.setCode(Result.ERROR);
             result.setMsg("密码输入不可为空,请重新输入");
             return result;
         }
         String realUserId = "";
-        if (needCheckValidateCode) {
-            if (!userInfoService.checkValidateCode(resetPwdParam.getMobileNumber())) {
-                logger.error("验证码验证失败,params:{} traceId:{}", params, traceId);
-                result.setCode(Result.ERROR);
-                result.setMsg("验证码输入错误,请重新输入");
-                return result;
-            }
-            List<UserInfoENT> list = userInfoService.getUserInfoByMobile(resetPwdParam.getMobileNumber());
-            if (CollectionUtils.isEmpty(list)) {
-                result.setCode(Result.ERROR);
-                result.setMsg("该手机号尚未绑定用户,请重新输入");
-                return result;
-            }
-            if (CollectionUtils.isNotEmpty(list) && list.size() > 1) {
-                String defaultName = userInfoService.getUserDefaultName(resetPwdParam.getMobileNumber(), traceId);
-                if (StringUtils.isBlank(defaultName)) {
-                    result.setCode(Result.ERROR);
-                    result.setMsg("存在多账号,请先选择默认用户");
-                    return result;
-                }
-                UserInfoENT userInfoENT = userInfoService.getUserInfoByLoginName(defaultName);
-                if (userInfoENT == null) {
-                    logger.warn("1061 根据默认用户名未获取到用户 traceId:{},defaultName:{}", traceId, defaultName);
-                }
-                realUserId = String.valueOf(userInfoENT.getUserId());
-            } else {
-                realUserId = String.valueOf(list.get(0).getUserId());
-            }
-        } else {
-            result = tokenService.verifyToken(header.getToken(), resetPwdParam.getType(), header.getUuid());
-            if (result.getCode() < 0) {
-                return result;
-            }
-            TokenLoginResult tokenLoginResult = (TokenLoginResult) result.getData();
-            realUserId = HttpUtils.decode(tokenLoginResult.getId());
+
+        if (!userInfoService.checkValidateCode(resetPwdParam.getMobile())) {
+            logger.error("验证码验证失败,params:{} traceId:{}", params, traceId);
+            result.setCode(Result.ERROR);
+            result.setMsg("验证码输入错误,请重新输入");
+            return result;
         }
-        return userInfoService.changeUserPassword(realUserId, resetPwdParam.getPassword(), traceId);
+        List<UserInfoENT> list = userInfoService.getUserInfoByMobile(resetPwdParam.getMobile());
+        if (CollectionUtils.isEmpty(list)) {
+            result.setCode(Result.ERROR);
+            result.setMsg("该手机号尚未绑定用户,请重新输入");
+            return result;
+        }
+        if (CollectionUtils.isNotEmpty(list) && list.size() > 1) {
+            String defaultName = userInfoService.getUserDefaultName(resetPwdParam.getMobile(), traceId);
+            if (StringUtils.isBlank(defaultName)) {
+                result.setCode(Result.ERROR);
+                result.setMsg("存在多账号,请先选择默认用户");
+                return result;
+            }
+            UserInfoENT userInfoENT = userInfoService.getUserInfoByLoginName(defaultName);
+            if (userInfoENT == null) {
+                logger.warn("1061 根据默认用户名未获取到用户 traceId:{},defaultName:{}", traceId, defaultName);
+            }
+            realUserId = String.valueOf(userInfoENT.getUserId());
+        } else {
+            realUserId = String.valueOf(list.get(0).getUserId());
+        }
+        return userInfoService.changeUserPassword(realUserId, resetPwdParam.getNewPw(), traceId);
     }
 
     /**
@@ -422,15 +422,12 @@ public class UserInfoHandlerImpl implements UserInfoHandler {
             result.setMsg("用户未绑定手机号或者输入手机号不是该用户所绑定的手机号");
             return result;
         }
-        Integer userType = forgetPayPassParams.getUsertype();
-        if (userType != null && LoginTypeEnum.APP.getValue().equals(userType)) {
-            String password = forgetPayPassParams.getPassword();
-            String encryptPwd = MD5Utils.encrypt(password, UserContext.MD5Key);
-            if (StringUtils.isBlank(password) || !Objects.equals(encryptPwd, user.getPassword())) {
-                result.setCode(Result.ERROR);
-                result.setMsg("登录密码错误");
-                return result;
-            }
+        String password = forgetPayPassParams.getPassword();
+        String encryptPwd = MD5Utils.encrypt(password, UserContext.MD5Key);
+        if (StringUtils.isBlank(password) || !Objects.equals(encryptPwd, user.getPassword())) {
+            result.setCode(Result.ERROR);
+            result.setMsg("登录密码错误");
+            return result;
         }
         String mobile = forgetPayPassParams.getMobile();
         return verifyCodeService.getVerifyCode(userID, mobile, VerifyCodeEnum.FORGETPAYPASS, traceId, null);
@@ -508,7 +505,6 @@ public class UserInfoHandlerImpl implements UserInfoHandler {
             logger.warn("[渠道校验失败]header:{}", GfJsonUtil.toJSONString(header));
             return result;
         }
-        String verifyCode = checkQuickRegisterParams.getVerifyCode();
         String mobile = checkQuickRegisterParams.getMobile();
         if (!MobileUtil.isMobileNO(mobile)) {
             result.setCode(Result.ERROR);
@@ -1022,7 +1018,7 @@ public class UserInfoHandlerImpl implements UserInfoHandler {
         if (payPassParams == null) {
             return getFailResult();
         }
-        return userInfoService.changeUserPayPassword(userID, payPassParams.getNewPw(), traceId);
+        return userInfoService.changeUserPayPassword(userID, payPassParams.getNewPw(), payPassParams.getVerifyCode(), traceId);
     }
 
     @Override
@@ -1042,7 +1038,7 @@ public class UserInfoHandlerImpl implements UserInfoHandler {
             result.setMsg("密码长度应在6-15位之间");
             return result;
         }
-        return userInfoService.bindUserPayPassword(traceId, payPassParams.getOldPw(), payPassParams.getNewPw(), userId);
+        return userInfoService.bindUserPayPassword(traceId, "", payPassParams.getNewPw(), userId);
     }
 
     /**

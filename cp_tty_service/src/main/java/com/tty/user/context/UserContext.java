@@ -174,7 +174,7 @@ public class UserContext {
      * @Date 2017/4/3 15:21
      * @Description wap站下载地址
      */
-    public final static String WAP_DOWNLOAD_URL = "r.jdd.com/d";
+    public final static String WAP_DOWNLOAD_URL = "/d";
 
     /**
      * @Author shenwei
@@ -198,8 +198,8 @@ public class UserContext {
     public final static String USER_REGISTER_SEND_SMS_VALUE = "true";
 
     // 注册成功短信内容
-    public final static String USER_REGISTER_APP_SMS_CONTENT = "感谢注册天天盈奖多多，新人礼包已到账，请登录APP至我的-福利任务领取。";
-    public final static String USER_REGISTER_PC_SMS_CONTENT = "感谢注册天天盈奖多多，出票更安全，派奖更效率！下载天天盈彩票APP，中奖信息不错过: r.jdd.com/d ";
+    public final static String USER_REGISTER_APP_SMS_CONTENT = "感谢注册天天盈彩票，请登录APP领取充值礼包。";
+    public final static String USER_REGISTER_PC_SMS_CONTENT = "感谢注册天天盈彩票，请登录APP领取充值礼包 ";
 
     /**
      * @Author shenwei

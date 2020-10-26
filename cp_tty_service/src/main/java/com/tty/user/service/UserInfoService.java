@@ -82,7 +82,7 @@ public interface UserInfoService {
      * @Date 2017/3/13 11:14
      * @Description 绑定手机号
      */
-    Result bindUserMobile(String userId, String verifyCode, String traceId, ClientRequestHeader header, Integer type);
+    Result bindUserMobile(String userId,String mobile, String verifyCode, String traceId, ClientRequestHeader header);
 
     /**
      * 110 退出登录
@@ -96,17 +96,11 @@ public interface UserInfoService {
      */
     Result changeUserPassword(String userId, String oldPwd, String newPwd, String traceId);
 
-    /**
-     * @Author shenwei
-     * @Date 2017/3/14 10:55
-     * @Description 提现密码绑定修改
-     */
-    Result changeUserPayPassword(String userId, String oldPwd, String newPwd, String traceId);
 
     /**
      * 1203 修改用户提现密码
      */
-    Result changeUserPayPassword(String userId, String newPwd, String traceId);
+    Result changeUserPayPassword(String userId, String newPwd,String verifyCode, String traceId);
 
     /**
      * 重置登入密码 action 16011,16012

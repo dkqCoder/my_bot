@@ -55,8 +55,8 @@ public class VerifyCodeCheckServiceImpl implements VerifyCodeCheckService {
      */
     @Override
     public Result checkBindUserMobile(String verifyCode, String mobile, String userId) {
-        String verifyCodeKey = String.format(UserRedisKeys.USER_BIND_MOBILE_VERIFY_CODE_USERID, userId);
-        String verifyErrorCountKey = String.format(UserRedisKeys.USER_BIND_MOBILE_ERROR_COUNT_USERID, userId);
+        String verifyCodeKey = String.format(UserRedisKeys.USER_BIND_MOBILE_VERIFY_CODE_USERID, userId, mobile);
+        String verifyErrorCountKey = String.format(UserRedisKeys.USER_BIND_MOBILE_ERROR_COUNT_USERID, userId, mobile);
         return verifyCheck(null, mobile, verifyCode, verifyCodeKey, verifyErrorCountKey, VerifyCodeEnum.BINDMOBILE);
     }
 
@@ -139,7 +139,7 @@ public class VerifyCodeCheckServiceImpl implements VerifyCodeCheckService {
             return getFailResult();
         }
         String mobile = quickRegisterParams.getMobile();
-        String verifyCode = quickRegisterParams.getMobile();
+        String verifyCode = quickRegisterParams.getVerifyCode();
         if (StringUtils.isEmpty(mobile)) {
             result.setCode(Result.ERROR);
             result.setMsg("手机号不能为空");
@@ -185,9 +185,9 @@ public class VerifyCodeCheckServiceImpl implements VerifyCodeCheckService {
      * @Description 1202忘记支付密码校验
      */
     @Override
-    public Result checkForgetPayPass(String verifyCode, String userId) {
-        String verifyCodeKey = String.format(UserRedisKeys.USER_FORGET_PAYPASS_VERIFY_CODE, userId);
-        String verifyErrorCountKey = String.format(UserRedisKeys.USER_FORGET_PAYPASS_ERROR_COUNT, userId);
+    public Result checkForgetPayPass(String verifyCode, String mobile) {
+        String verifyCodeKey = String.format(UserRedisKeys.USER_FORGET_PAYPASS_VERIFY_CODE, mobile);
+        String verifyErrorCountKey = String.format(UserRedisKeys.USER_FORGET_PAYPASS_ERROR_COUNT, mobile);
         return verifyCheck(null, null, verifyCode, verifyCodeKey, verifyErrorCountKey, VerifyCodeEnum.FORGETPAYPASS);
     }
 
@@ -261,9 +261,7 @@ public class VerifyCodeCheckServiceImpl implements VerifyCodeCheckService {
             }
             return result;
         }
-        Integer errorCount = userRedis.get(verifyErrorCountKey) == null ? 0 : Integer.parseInt(userRedis.get(verifyErrorCountKey));
-        errorCount++;
-        userRedis.set(verifyErrorCountKey, errorCount.toString());
+        Integer errorCount = userRedis.incr(verifyErrorCountKey).intValue();
         userRedis.expire(verifyCodeKey, Integer.valueOf(DateUtils.getSecondsToTomorrow().toString()));
         if (errorCount <= UserContext.VERIFY_FAIL_PER_MAX) {
             result.setCode(Result.ERROR);

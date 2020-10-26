@@ -22,7 +22,7 @@ public interface VerifyCodeCheckService {
 
     Result checkQuickRegister(String params, ClientRequestHeader header);
 
-    Result checkForgetPayPass(String verifyCode, String userId);
+    Result checkForgetPayPass(String verifyCode, String mobile);
 
 
     Result checkWapVerifyCode(String verifyCode, String mobile, String traceId, ClientRequestHeader header);

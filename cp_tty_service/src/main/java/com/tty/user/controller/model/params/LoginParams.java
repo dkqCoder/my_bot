@@ -10,19 +10,22 @@ import com.alibaba.fastjson.annotation.JSONField;
  */
 public class LoginParams {
     private int loginType; // 1:用户名密码登陆 2:验证码登陆
-    private String token;
+
     private String name;
     private String password;
-    private String userId;
-    private Integer userType;
 
     /**
      * 短信验证码登陆
-     * */
-    @JSONField(name = "mobile")
+     */
     private String mobile;
-    @JSONField(name = "verifycode")
     private String verifyCode;
+
+    /**
+     * 三方登陆携带token
+     */
+    private String userId;
+    private String token;
+    private Integer userType;
 
     public String getMobile() {
         return mobile;
@@ -67,6 +70,7 @@ public class LoginParams {
     public String getPassword() {
         return password;
     }
+
     @JSONField(name = "pw")
     public void setPassword(String password) {
         this.password = password;
@@ -75,7 +79,7 @@ public class LoginParams {
     public String getUserId() {
         return userId;
     }
-    @JSONField(name = "userid")
+
     public void setUserId(String userId) {
         this.userId = userId;
     }
@@ -83,7 +87,7 @@ public class LoginParams {
     public Integer getUserType() {
         return userType;
     }
-    @JSONField(name = "usertype")
+
     public void setUserType(Integer userType) {
         this.userType = userType;
     }

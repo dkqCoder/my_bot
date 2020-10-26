@@ -13,7 +13,6 @@ public class BindMobileVerifyParam {
     private String oldMobile;
     private String mobile;
     /*类型*/
-    private Integer type;
     private String captchaKey; // 图形验证码key
     private String captchaValue; // 图形验证码value
 
@@ -31,14 +30,6 @@ public class BindMobileVerifyParam {
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
     }
 
     public String getCaptchaKey() {

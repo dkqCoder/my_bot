@@ -7,15 +7,15 @@ package com.tty.user.controller.model.params;/**
  * @create 2017-03-14
  */
 public class PayPassParams {
-    private String oldPw;
+    private String verifyCode;
     private String newPw;
 
-    public String getOldPw() {
-        return oldPw;
+    public String getVerifyCode() {
+        return verifyCode;
     }
 
-    public void setOldPw(String oldPw) {
-        this.oldPw = oldPw;
+    public void setVerifyCode(String verifyCode) {
+        this.verifyCode = verifyCode;
     }
 
     public String getNewPw() {

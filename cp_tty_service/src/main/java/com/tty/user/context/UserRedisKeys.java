@@ -322,7 +322,7 @@ public class UserRedisKeys {
      * @Date 2017/3/13 11:56
      * @Description 用户绑定手机号验证码
      */
-    public final static String USER_BIND_MOBILE_VERIFY_CODE_USERID = "user:bindMobile:verifyCode:userId:%s";
+    public final static String USER_BIND_MOBILE_VERIFY_CODE_USERID = "user:bindMobile:verifyCode:userId:%s_mobile:%s";
 
     /**
      * @Author shenwei
@@ -423,14 +423,14 @@ public class UserRedisKeys {
      * @Date 2017/3/20 14:27
      * @Description 用户忘记支付密码找回密码验证码
      */
-    public final static String USER_FORGET_PAYPASS_VERIFY_CODE = "user:forgetPayPass:verifyCode:userId:%s";
+    public final static String USER_FORGET_PAYPASS_VERIFY_CODE = "user:forgetPayPass:verifyCode:mobile:%s";
 
     /**
      * @Author shenwei
      * @Date 2017/3/20 14:31
      * @Description 用户忘记支付密码找回密码验证码获取次数
      */
-    public final static String USER_FORGET_PAYPASS_GET_COUNT = "user:forgetPayPass:getCount:userId:%s";
+    public final static String USER_FORGET_PAYPASS_GET_COUNT = "user:forgetPayPass:getCount:mobile:%s";
 
     /**
      * @Author shenwei
@@ -674,7 +674,7 @@ public class UserRedisKeys {
      */
     public static final String GRAY_USER_CHECKED = "user:gray_userId:%s";
 
-     /**
+    /**
      * @Author shenwei
      * @Date 2017/12/22 10:26
      * @Description 大概用户总数 ,保存一天
@@ -693,5 +693,10 @@ public class UserRedisKeys {
      * @Description 汽车之家活动临时id
      */
     public final static String USER_TEMP_ID = "user_temp_id";
+
+    /**
+     * 图形验证码key
+     */
+    public static final String USER_CAPTCHA_KEY = "user:captcha:key:%s";
 
 }
