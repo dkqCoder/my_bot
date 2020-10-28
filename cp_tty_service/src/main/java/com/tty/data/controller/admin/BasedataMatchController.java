@@ -2,9 +2,14 @@ package com.tty.data.controller.admin;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.jdd.fm.core.model.ExtModel;
 import com.tty.data.common.bean.BaseController;
+import com.tty.data.dao.entity.BasedataMatchJczqENT;
+import com.tty.data.dao.entity.BasedataSalestateJczqENT;
+import com.tty.data.service.BasedataMatchJclqService;
 import com.tty.data.service.BasedataMatchJczqService;
-import com.tty.user.common.ExtModel;
+import com.tty.data.service.BasedataSalestateJczqService;
+import java.util.UUID;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,13 +25,15 @@ public class BasedataMatchController extends BaseController {
 
     @Autowired
     private BasedataMatchJczqService basedataMatchJczqService;
-//    @Autowired
-//    private BasedataMatchJclqService basedataMatchJclqService;
-//    @Autowired
-//    private BasedataSalestateJczqService basedataSalestateJczqService;
+
+    @Autowired
+    private BasedataMatchJclqService basedataMatchJclqService;
+
+    @Autowired
+    private BasedataSalestateJczqService basedataSalestateJczqService;
 
     /**
-     * 获取竞彩足球比赛表
+     * 获取竞彩足球对阵列表
      */
     @RequestMapping("listBasedataMatchJczqByHostTeamAndVisitTeam")
     public Object listBasedataMatchJczq(@RequestBody JSONObject jsonParm) {
@@ -36,8 +43,8 @@ public class BasedataMatchController extends BaseController {
     }
 
     /**
-     * ext 接口
-     *//*
+     * 获取单场比赛的详情
+     */
     @RequestMapping(value = "findBasedataMatchJczq")
     public Object findBasedataMatchJczqENT(@RequestBody JSONObject jsonObject) {
 
@@ -51,9 +58,10 @@ public class BasedataMatchController extends BaseController {
         basedataMatchJczqService.findBasedataMatchJczq(matchId, result);
         return result;
     }
-    *//**
-     * ext 接口
-     *//*
+
+    /**
+     * 根据比赛编号获取比赛详情
+     */
     @RequestMapping(value = "findBasedataMatchJczqByIssueMatchName")
     public Object findBasedataMatchJczqByIssueMatchName(@RequestBody JSONObject jsonObject) {
 
@@ -75,9 +83,9 @@ public class BasedataMatchController extends BaseController {
     }
 
 
-    *//**
-     * ext 接口 列表
-     *//*
+    /**
+     * 根据主客队获取篮球对阵列表
+     */
     @RequestMapping("listBasedataMatchJclqByHostTeamAndVisitTeam")
     public Object listBasedataMatchJclq(@RequestBody JSONObject jsonParm) {
         ExtModel result = new ExtModel();
@@ -85,9 +93,9 @@ public class BasedataMatchController extends BaseController {
         return result;
     }
 
-    *//**
-     * ext 接口
-     *//*
+    /**
+     * 根据竞彩篮球比赛ID获取比赛信息
+     */
     @RequestMapping(value = "findBasedataMatchJclq")
     public Object findBasedataMatchJclqENT(Integer matchId) {
         ExtModel result = new ExtModel();
@@ -95,9 +103,12 @@ public class BasedataMatchController extends BaseController {
         return result;
     }
 
-    *//**
-     * ext 接口
-     *//*
+    /**
+     *
+     * 根据期次比赛编号获取竞彩足球销售状态
+     * @param jsonObject
+     * @return
+     */
     @RequestMapping(value = "findBasedataSalestateJczq")
     public Object findBasedataSalestateJczq(@RequestBody JSONObject jsonObject) {
         String issueMatchName = jsonObject.getString("issueMatchName");
@@ -115,5 +126,5 @@ public class BasedataMatchController extends BaseController {
         }
         result.setData(dto);
         return result;
-    }*/
+    }
 }

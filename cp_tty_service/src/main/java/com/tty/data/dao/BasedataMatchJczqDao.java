@@ -14,4 +14,8 @@ public interface BasedataMatchJczqDao {
     List<BasedataMatchJczqENT> listBasedataMatchJczqByHostTeamAndVisitTeam(Integer page, Integer limit, JSONObject data);
 
     Long listBasedataMatchJczqByHostTeamAndVisitTeamCount(JSONObject data);
+
+    BasedataMatchJczqENT findBasedataMatchJczq(Integer matchId);
+
+    List<BasedataMatchJczqENT> listBasedataMatchJczqByIssueMatchName(String issueMatchName);
 }

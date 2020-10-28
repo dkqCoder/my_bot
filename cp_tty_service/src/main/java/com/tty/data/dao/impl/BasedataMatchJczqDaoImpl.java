@@ -2,6 +2,7 @@ package com.tty.data.dao.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.jdd.fm.core.db.BaseDao;
+import com.jdd.fm.core.db.ds.DataSource;
 import com.jdd.fm.core.utils.DateUtil;
 import com.jdd.fm.core.utils.WhereUtils;
 import com.tty.data.dao.BasedataMatchJczqDao;
@@ -9,6 +10,7 @@ import com.tty.data.dao.entity.BasedataMatchJczqENT;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author zhuxinhai
@@ -55,6 +57,19 @@ public class BasedataMatchJczqDaoImpl extends BaseDao<BasedataMatchJczqENT> impl
             .contains("visitTeam", array[1])
             .andGt("matchStartTime", DateUtil.nowDate());
         return count(fullHql.getAllSql(), fullHql.getParms()).longValue();
+    }
+
+    @Override
+    @DataSource(name = DataSource.DATA_SOURCE_READ)
+    @Transactional(readOnly = true)
+    public BasedataMatchJczqENT findBasedataMatchJczq(Integer matchId) {
+        return get(BasedataMatchJczqENT.class, matchId);
+    }
+
+    @DataSource(name = DataSource.DATA_SOURCE_READ)
+    @Transactional(readOnly = true)
+    public List<BasedataMatchJczqENT> listBasedataMatchJczqByIssueMatchName(String issueMatchName) {
+        return find("FROM BasedataMatchJczqENT WHERE issueMatchName = ?  ", issueMatchName);
     }
 
 }

@@ -1,10 +1,8 @@
 package com.tty.data.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.tty.user.common.ExtModel;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import com.jdd.fm.core.model.ExtModel;
+import com.tty.data.dao.entity.BasedataMatchJczqENT;
 
 /**
  * @author zxh
@@ -13,6 +11,10 @@ import java.util.Map;
 public interface BasedataMatchJczqService {
 
     ExtModel listBasedataMatchJczqByHostTeamAndVisitTeam(JSONObject jsonParm, ExtModel result);
+
+    void findBasedataMatchJczq(Integer matchId, ExtModel result);
+
+    BasedataMatchJczqENT getCurrentJczqMatch(String traceId, String issueMatchName);
 
 
 }
