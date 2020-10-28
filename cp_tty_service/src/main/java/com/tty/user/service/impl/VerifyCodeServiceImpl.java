@@ -60,8 +60,9 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
         SpecCaptcha specCaptcha = new SpecCaptcha(130, 48, 4);
         String verCode = specCaptcha.text().toLowerCase();
         String key = UUID.randomUUID().toString();
+        String redisKey = String.format(UserRedisKeys.USER_CAPTCHA_KEY, key);
         // 存入redis并设置过期时间为10分钟
-        // userRedis.setex(key, 60 * 10, verCode);
+        // userRedis.setex(redisKey, 60 * 10, verCode);
         // 将key和base64返回给前端
         PicCaptchaDTO picCaptchaDTO = new PicCaptchaDTO(key, specCaptcha.toBase64());
         resultModel.setData(picCaptchaDTO);
@@ -78,9 +79,10 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
         if ("tty888".equals(captchaValue)) { // 特殊通行码，便于调试
             return true;
         }
-        String value = userRedis.get(captchaKey);
+        String redisKey = String.format(UserRedisKeys.USER_CAPTCHA_KEY, captchaKey);
+        String value = userRedis.get(redisKey);
         if (captchaValue.equals(value)) {
-            userRedis.del(captchaKey); // 移除缓存
+            userRedis.del(redisKey); // 移除缓存
             return true;
         } else {
             return false;
@@ -141,7 +143,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
             case FORGETLOGINPASS:
                 return forgetLoginPass(userId, null, mobile, traceId);
             case FORGETPAYPASS:
-                return forgetPayPass(userId, mobile, traceId);
+                return forgetPayPass(mobile, traceId);
             case THIRDBINDMOBILE:
                 return getThirdBindMobile(userId, mobile, traceId);
             case WAPVERIFYCODE:
@@ -170,7 +172,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
             case FORGETLOGINPASS:
                 return forgetLoginPass(userId, null, mobile, traceId);
             case FORGETPAYPASS:
-                return forgetPayPass(userId, mobile, traceId);
+                return forgetPayPass(mobile, traceId);
             case THIRDBINDMOBILE:
                 return getThirdBindMobile(userId, mobile, traceId);
             case WAPVERIFYCODE:
@@ -310,10 +312,10 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
      * @Date 2017/3/20 12:11
      * @Description 1201 get verify code when you forget pay pass
      */
-    private Result forgetPayPass(String userId, String mobile, String traceId) {
-        String verifyCodeKey = String.format(UserRedisKeys.USER_FORGET_PAYPASS_VERIFY_CODE, userId);
-        String verifyGetCountKey = String.format(UserRedisKeys.USER_FORGET_PAYPASS_GET_COUNT, userId);
-        return verifySend(verifyCodeKey, verifyGetCountKey, userId, mobile, VerifyCodeEnum.FORGETPAYPASS, traceId);
+    private Result forgetPayPass(String mobile, String traceId) {
+        String verifyCodeKey = String.format(UserRedisKeys.USER_FORGET_PAYPASS_VERIFY_CODE, mobile);
+        String verifyGetCountKey = String.format(UserRedisKeys.USER_FORGET_PAYPASS_GET_COUNT, mobile);
+        return verifySend(verifyCodeKey, verifyGetCountKey, null, mobile, VerifyCodeEnum.FORGETPAYPASS, traceId);
     }
 
     /**
@@ -379,9 +381,6 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
             String verifyCode = MobileUtil.getVerifyCode();
             userRedis.set(verifyCodeKey, verifyCode);
             userRedis.expire(verifyCodeKey, 10 * 60);
-            if (verifyCodeEnum.getValue().equals(VerifyCodeEnum.BINDMOBILE.getValue())) {
-                cacheMobileByUserIdAndVerifyCode(userId, mobile, verifyCode);
-            }
             if (smsService.sendVerifyCode(0, mobile, verifyCodeEnum, userId, verifyCode, smsType, traceId)) {
                 if (VerifyCodeEnum.FORGETPAYPASS.equals(verifyCodeEnum)) {
                     result.setCode(1);
@@ -406,26 +405,12 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 
     /**
      * @Author shenwei
-     * @Date 2017/3/27 14:44
-     * @Description 因接口未传入mobile 故被迫如此实现
-     */
-    private void cacheMobileByUserIdAndVerifyCode(String userId, String mobile, String verifyCode) {
-        String mobileKey = String.format(UserRedisKeys.USER_BIND_MOBILE_VERIFY_CODE_MOBILE, userId, verifyCode);
-        userRedis.set(mobileKey, mobile);
-        userRedis.expire(mobileKey, 10 * 60);
-    }
-
-    /**
-     * @Author shenwei
      * @Date 2017/3/17 15:09
      * @Description 今日获取同一类别验证码次数是否已达上限
      */
     private Boolean canStillGetVerifyCodeToday(String verifyGetCountKey) {
         // 获取验证码次数验证
-        String getCountStr = userRedis.get(verifyGetCountKey);
-        Integer getVerifyCodeCount = StringUtils.isEmpty(getCountStr) ? 0 : Integer.valueOf(getCountStr);
-        getVerifyCodeCount++;
-        userRedis.set(verifyGetCountKey, getVerifyCodeCount.toString());
+        Integer getVerifyCodeCount = userRedis.incr(verifyGetCountKey).intValue();
         userRedis.expire(verifyGetCountKey, DateUtils.getSecondsToTomorrow().intValue());
         if (getVerifyCodeCount > UserContext.VERIFY_FAIL_MAX) {
             return false;

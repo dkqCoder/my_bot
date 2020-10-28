@@ -9,7 +9,6 @@ package com.tty.user.controller.model.params;/**
 public class ForgetPayPassParams {
     private String password;
     private String mobile;
-    private Integer usertype;
 
     public String getPassword() {
         return password;
@@ -27,11 +26,4 @@ public class ForgetPayPassParams {
         this.mobile = mobile;
     }
 
-    public Integer getUsertype() {
-        return usertype;
-    }
-
-    public void setUsertype(Integer usertype) {
-        this.usertype = usertype;
-    }
 }

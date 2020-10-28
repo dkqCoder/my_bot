@@ -104,8 +104,8 @@ public class PubMobileHandlerSecurityController extends APIBaseController {
      * 发送安全认证短信(手机换绑)
      */
     @Action(value = "12005", tokenValidated = true)
-    public ResultModel getBindMobileVerifyCode(ClientRequestHeader header, Object body) {
-        Result result = userInfoHandler.getBindMobileVerifyCode(header.getTraceID(), null, String.valueOf(body));
+    public ResultModel getBindMobileVerifyCode(ClientRequestHeader header, Object body, UserVO userVO) {
+        Result result = userInfoHandler.getBindMobileVerifyCode(header.getTraceID(), userVO.getUserid().toString(), String.valueOf(body));
         return resultToResultModel(result);
     }
 
@@ -122,8 +122,8 @@ public class PubMobileHandlerSecurityController extends APIBaseController {
      * 发送安全认证短信(设置支付密码)
      */
     @Action(value = "12007", tokenValidated = true)
-    public ResultModel getForgetPayPassVerifyCode(ClientRequestHeader header, Object body) {
-        Result result = userInfoHandler.getForgetPayPassVerifyCode(header.getTraceID(), null, String.valueOf(body));
+    public ResultModel getForgetPayPassVerifyCode(ClientRequestHeader header, Object body, UserVO userVO) {
+        Result result = userInfoHandler.getForgetPayPassVerifyCode(header.getTraceID(), userVO.getUserid().toString(), String.valueOf(body));
         return resultToResultModel(result);
     }
 
@@ -155,8 +155,8 @@ public class PubMobileHandlerSecurityController extends APIBaseController {
      * 第一次设定无需填写旧密码  第一次设定后必须旧密码正确才可修改新密码
      */
     @Action(value = "12009", tokenValidated = true)
-    public ResultModel setPassword(ClientRequestHeader header, Object body) {
-        Result result = userInfoHandler.changeUserPassword(header.getTraceID(), null, String.valueOf(body));
+    public ResultModel setPassword(ClientRequestHeader header, Object body, UserVO userVO) {
+        Result result = userInfoHandler.changeUserPassword(header.getTraceID(), userVO.getUserid().toString(), String.valueOf(body));
         return resultToResultModel(result);
     }
 
@@ -164,8 +164,8 @@ public class PubMobileHandlerSecurityController extends APIBaseController {
      * 支付密码设置(先获取短信验证码，凭短信验证码设置支付密码)
      */
     @Action(value = "12010", tokenValidated = true)
-    public ResultModel setPayPassword(ClientRequestHeader header, Object body) {
-        Result result = userInfoHandler.changeUserPayPassword(header.getTraceID(), null, String.valueOf(body));
+    public ResultModel setPayPassword(ClientRequestHeader header, Object body, UserVO userVO) {
+        Result result = userInfoHandler.changeUserPayPassword(header.getTraceID(), userVO.getUserid().toString(), String.valueOf(body));
         return resultToResultModel(result);
     }
 
@@ -182,8 +182,8 @@ public class PubMobileHandlerSecurityController extends APIBaseController {
      * 手机换绑
      */
     @Action(value = "12012", tokenValidated = true)
-    public ResultModel changPhoneNo(ClientRequestHeader header, Object body) {
-        Result result = userInfoHandler.bindUserMobile(header.getTraceID(), null, String.valueOf(body), header);
+    public ResultModel changPhoneNo(ClientRequestHeader header, Object body,  UserVO userVO) {
+        Result result = userInfoHandler.bindUserMobile(header.getTraceID(), userVO.getUserid().toString(), String.valueOf(body), header);
         return resultToResultModel(result);
     }
 
@@ -191,8 +191,8 @@ public class PubMobileHandlerSecurityController extends APIBaseController {
      * 获取实名认证信息
      */
     @Action(value = "12013", tokenValidated = true)
-    public ResultModel getUserInfo(ClientRequestHeader header, Object body) {
-        Result result = userInfoHandler.getBasicUserInfo(header.getTraceID(), header, String.valueOf(body), null);
+    public ResultModel getUserInfo(ClientRequestHeader header, Object body, UserVO userVO) {
+        Result result = userInfoHandler.getBasicUserInfo(header.getTraceID(), header, String.valueOf(body), userVO.getUserid().toString());
         return resultToResultModel(result);
     }
 
@@ -225,8 +225,8 @@ public class PubMobileHandlerSecurityController extends APIBaseController {
      * 修改昵称
      */
     @Action(value = "12015", tokenValidated = true)
-    public ResultModel editNickName(ClientRequestHeader header, Object body) {
-        Result result = userInfoHandler.editNickName(header.getTraceID(), null, String.valueOf(body));
+    public ResultModel editNickName(ClientRequestHeader header, Object body, UserVO userVO) {
+        Result result = userInfoHandler.editNickName(header.getTraceID(), userVO.getUserid().toString(), String.valueOf(body));
         return resultToResultModel(result);
     }
 
@@ -234,8 +234,8 @@ public class PubMobileHandlerSecurityController extends APIBaseController {
      * 实名认证
      */
     @Action(value = "12016", tokenValidated = true)
-    public ResultModel authentication(ClientRequestHeader header, Object body) {
-        Result result = userInfoHandler.bindUserRealityNameAndCertCard(header.getTraceID(), null, String.valueOf(body), header);
+    public ResultModel authentication(ClientRequestHeader header, Object body, UserVO userVO) {
+        Result result = userInfoHandler.bindUserRealityNameAndCertCard(header.getTraceID(), userVO.getUserid().toString(), String.valueOf(body), header);
         return resultToResultModel(result);
     }
 
@@ -244,7 +244,7 @@ public class PubMobileHandlerSecurityController extends APIBaseController {
      */
     @Action(value = "12017", tokenValidated = true)
     public ResultModel userLogout(ClientRequestHeader header, Object body, UserVO user) {
-        Result result = userInfoHandler.userLogout(header.getTraceID(), null, header.getToken());
+        Result result = userInfoHandler.userLogout(header.getTraceID(), user.getUserid().toString(), header.getToken());
         return resultToResultModel(result);
     }
 

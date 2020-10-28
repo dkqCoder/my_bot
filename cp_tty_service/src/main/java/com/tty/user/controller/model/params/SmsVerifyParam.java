@@ -7,7 +7,6 @@ package com.tty.user.controller.model.params;
  */
 public class SmsVerifyParam {
     private String mobile;
-    private Integer type;
     private String captchaKey; // 图形验证码key
     private String captchaValue; // 图形验证码value
 
@@ -17,14 +16,6 @@ public class SmsVerifyParam {
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
-    }
-
-    public Integer getType() {
-        return type;
-    }
-
-    public void setType(Integer type) {
-        this.type = type;
     }
 
     public String getCaptchaKey() {
