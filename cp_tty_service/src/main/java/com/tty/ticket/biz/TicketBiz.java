@@ -119,7 +119,6 @@ public class TicketBiz {
                 logger.warn("[出票]票号已存在,ticketNo:{}", dataItem.getTicketNo());
                 continue;
             }
-
             TicketDTO ticketDTO = new TicketDTO();
             ticketDTO.setMoney(dataItem.getMoney());
             ticketDTO.setLotteryId(dataItem.getLotteryId());//彩种

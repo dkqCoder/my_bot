@@ -15,8 +15,9 @@ public class BasedataSalestateJczqDaoImpl extends BaseDao<BasedataSalestateJczqE
 
     @Override
     public BasedataSalestateJczqENT getBasedataSalestateJczqByIssueMatchName(String issueMatchName) {
-        Query query = getQuery("FROM BasedataSalestateJczqENT WHERE issueMatchName = :issueMatchName  ");
-        query.setParameter("issueMatchName", issueMatchName);
+        StringBuilder hql = new StringBuilder();
+        hql.append("SELECT * from basedata_salestate_jczq WHERE s_issue_match_name = : issueMatchName");
+        Query query = getQuery(hql.toString()).setString("issueMatchName", issueMatchName);
         return (BasedataSalestateJczqENT) query.uniqueResult();
     }
 

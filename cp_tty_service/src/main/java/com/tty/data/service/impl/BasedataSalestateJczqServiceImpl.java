@@ -1,7 +1,6 @@
 package com.tty.data.service.impl;
 
 import com.jdd.fm.core.db.ds.DataSource;
-import com.jdd.fm.core.redis.ShardedRedisManager;
 import com.tty.data.dao.BasedataSalestateJczqDao;
 import com.tty.data.dao.entity.BasedataSalestateJczqENT;
 import com.tty.data.service.BasedataSalestateJczqService;
@@ -18,10 +17,6 @@ public class BasedataSalestateJczqServiceImpl implements BasedataSalestateJczqSe
 
     @Autowired
     private BasedataSalestateJczqDao basedataSalestateJczqDao;
-
-//    @Autowired
-//    private ShardedRedisManager sharedRedisManager;
-
 
     @Transactional
     @DataSource(name = DataSource.DATA_SOURCE_WRITE)

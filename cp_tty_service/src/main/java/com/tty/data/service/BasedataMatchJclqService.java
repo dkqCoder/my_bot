@@ -4,7 +4,6 @@ import com.alibaba.fastjson.JSONObject;
 import com.jdd.fm.core.model.ExtModel;
 
 /**
- * @author zxh
  * @create 2017-02-09 16:42:58
  **/
 public interface BasedataMatchJclqService {
