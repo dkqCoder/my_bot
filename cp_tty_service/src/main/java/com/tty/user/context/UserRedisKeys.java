@@ -407,16 +407,7 @@ public class UserRedisKeys {
      */
     public final static String USER_FORGET_PASS_ERROR_COUNT = "user:forgetLoginPass:errorCount:mobile:%s";
 
-    /**
-     * @Author shenwei
-     * @Date 2017/3/16 17:35
-     * @Description 用户忘记密码找回密码，验证码填写是否正确 存在且值为1 及正确. expire minutes 10
-     */
-    public final static String USER_FORGET_PASS_VERIFY_CODE_VALIDE = "user:forgetLoginPass:verifyCodeValid:mobile:%s";
-    /**
-     * 手机短信登录 验证状态
-     */
-    public final static String USER_SMS_LOGIN_VERIFY_CODE_VALIDE = "user:sms:login:verifyCodeValid:mobile:%s";
+
 
     /**
      * @Author shenwei

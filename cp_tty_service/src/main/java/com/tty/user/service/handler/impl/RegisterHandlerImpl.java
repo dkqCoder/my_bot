@@ -5,12 +5,9 @@ package com.tty.user.service.handler.impl;/**
 import com.jdd.fm.core.model.ClientRequestHeader;
 import com.jdd.fm.core.utils.GfJsonUtil;
 import com.tty.common.utils.Result;
-import org.apache.commons.lang.StringUtils;
 import com.tty.user.common.utils.EntranceUtil;
 import com.tty.user.controller.model.params.RegisterParams;
-import com.tty.user.dao.UserConfigDao;
 import com.tty.user.service.UserInfoService;
-import com.tty.user.service.VerifyCodeService;
 import com.tty.user.service.handler.RegisterHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

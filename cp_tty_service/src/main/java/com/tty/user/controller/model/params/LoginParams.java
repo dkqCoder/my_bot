@@ -71,7 +71,6 @@ public class LoginParams {
         return password;
     }
 
-    @JSONField(name = "pw")
     public void setPassword(String password) {
         this.password = password;
     }

@@ -15,6 +15,7 @@ import com.tty.user.common.tupu.TuPuModel;
 import com.tty.user.common.utils.*;
 import com.tty.user.context.LoginTypeEnum;
 import com.tty.user.context.UserContext;
+import com.tty.user.context.UserRedisKeys;
 import com.tty.user.context.VerifyCodeEnum;
 import com.tty.user.controller.model.params.*;
 import com.tty.user.controller.model.result.TokenLoginResult;
@@ -231,12 +232,11 @@ public class UserInfoHandlerImpl implements UserInfoHandler {
         }
         String realUserId = "";
 
-        if (!userInfoService.checkValidateCode(resetPwdParam.getMobile())) {
-            logger.error("验证码验证失败,params:{} traceId:{}", params, traceId);
-            result.setCode(Result.ERROR);
-            result.setMsg("验证码输入错误,请重新输入");
-            return result;
+        Result checkResult = verifyCodeCheckService.checkForgetLoginPass(resetPwdParam.getVerifyCode(), resetPwdParam.getMobile());
+        if (checkResult.getCode() < 0) {
+            return checkResult;
         }
+
         List<UserInfoENT> list = userInfoService.getUserInfoByMobile(resetPwdParam.getMobile());
         if (CollectionUtils.isEmpty(list)) {
             result.setCode(Result.ERROR);

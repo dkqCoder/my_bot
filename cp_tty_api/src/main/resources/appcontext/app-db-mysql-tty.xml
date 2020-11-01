@@ -171,6 +171,7 @@ http://www.springframework.org/schema/tx/spring-tx-4.0.xsd
         <!-- 注解方式配置 -->
         <property name="packagesToScan">
             <list>
+                <value>com.tty.user.dao.entity</value>
                 <!--<value>com.jdd.user.dao.mission.pojo</value>
                 <value>com.jdd.user.dao.pojo</value>
                 <value>com.jdd.user.dao.entity</value>-->
