@@ -1,9 +1,9 @@
 package com.tty.data.common.util;
 
-import com.jdd.basedata.dao.entity.BasedataMatchBjdcENT;
-import com.jdd.basedata.dao.entity.BasedataMatchJclqENT;
-import com.jdd.basedata.dao.entity.BasedataMatchJczqENT;
 import com.jdd.fm.core.utils.DateUtil;
+import com.tty.data.dao.entity.BasedataMatchBjdcENT;
+import com.tty.data.dao.entity.BasedataMatchJclqENT;
+import com.tty.data.dao.entity.BasedataMatchJczqENT;
 
 /**
  * @author yinyansheng

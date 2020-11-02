@@ -1,6 +1,7 @@
 package com.tty.data.dto;
 
-import com.jdd.basedata.vo.ClientPlayOption;
+
+import com.tty.data.controller.vo.ClientPlayOption;
 
 /**
  * Created by rxu on 2017/11/24.

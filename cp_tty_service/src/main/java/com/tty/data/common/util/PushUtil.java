@@ -1,8 +1,8 @@
 package com.tty.data.common.util;
 
-import com.jdd.basedata.commons.context.BasedataContext;
 import com.jdd.fm.core.utils.HttpUtil;
 import com.jdd.fm.core.utils.PropertiesUtil;
+import com.tty.data.context.BasedataContext;
 
 /**
  * Created by pdl on 2017/2/20.

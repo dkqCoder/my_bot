@@ -1,8 +1,8 @@
 package com.tty.data.common.util;
 
-import com.jdd.basedata.api.controller.vo.TicketParams;
 import com.jdd.fm.core.utils.PropertiesUtil;
 import com.jdd.fm.core.utils.StringUtils;
+import com.tty.data.controller.vo.TicketParams;
 import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

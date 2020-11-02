@@ -2,12 +2,9 @@ package com.tty.data.common.util;
 
 import com.jdd.fm.core.utils.DateUtil;
 import com.jdd.fm.core.utils.PropertiesUtil;
-import com.jdddata.bdpush.bo.bdsp.BdMatchFinalSpBo;
-import com.jdddata.bdpush.bo.common.CommonSpBo;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang.StringUtils;
@@ -277,7 +274,7 @@ public class IssueMatchUtil {
         return sp;
     }
 
-    public static String getActualSP(List<CommonSpBo> commonSpBoList) {
+    /*public static String getActualSP(List<CommonSpBo> commonSpBoList) {
         if (CollectionUtils.isEmpty(commonSpBoList)) {
             return "";
         }
@@ -320,5 +317,5 @@ public class IssueMatchUtil {
             return "";
         }
         return s.substring(0, s.length() - 1);
-    }
+    }*/
 }
