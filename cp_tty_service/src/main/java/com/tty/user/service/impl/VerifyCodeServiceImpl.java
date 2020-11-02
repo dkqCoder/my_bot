@@ -62,7 +62,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
         String key = UUID.randomUUID().toString();
         String redisKey = String.format(UserRedisKeys.USER_CAPTCHA_KEY, key);
         // 存入redis并设置过期时间为10分钟
-        // userRedis.setex(redisKey, 60 * 10, verCode);
+        userRedis.setex(redisKey, 60 * 10, verCode);
         // 将key和base64返回给前端
         PicCaptchaDTO picCaptchaDTO = new PicCaptchaDTO(key, specCaptcha.toBase64());
         resultModel.setData(picCaptchaDTO);

@@ -861,12 +861,6 @@ public class UserInfoServiceImpl implements UserInfoService {
         userInfoDao.updateUserInfo(userInfo);
     }
 
-    public Boolean checkValidateCode(String mobile) {
-        String validateCodeKey = String.format(UserRedisKeys.USER_FORGET_PASS_VERIFY_CODE_VALIDE, mobile);
-        String valid = userRedis.get(validateCodeKey);
-        return StringUtils.isNotBlank(valid) && valid.equals("1");
-    }
-
     @Transactional
     @DataSource(name = DataSource.DATA_SOURCE_WRITE)
     @Override

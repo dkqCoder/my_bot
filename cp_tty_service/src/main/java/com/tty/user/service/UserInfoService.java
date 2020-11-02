@@ -29,8 +29,6 @@ public interface UserInfoService {
 
     String getUserDefaultName(String mobile, String traceId);
 
-    Boolean checkValidateCode(String mobile);
-
     UserIdcardResetENT getResetIdCardInfo(String traceId, String userId);
 
     Result bindUserPayPassword(String traceId, String oldPw, String newPw, String userId);

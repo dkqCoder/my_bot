@@ -50,15 +50,8 @@ public class SmsServiceImpl implements SmsService {
             }
             // 调用短信系统发送短信
             MessageDTO messageDTO = new MessageDTO(mobile, messageBody, smsType, "tty_user");
-
-            smsOutService.sendMsg(messageDTO);
-            String resultStr = "";
-            logger.info("调用短信发送,收到返回结果 {}", resultStr);
-            if (StringUtils.isBlank(resultStr)) {
-                return false;
-            }
-            ResultModel resultModel = GfJsonUtil.parseObject(resultStr, ResultModel.class);
-            return resultModel.getCode() >= 0;
+            boolean result = smsOutService.sendMsg(messageDTO);
+            return result;
         } catch (Exception e) {
             logger.error("手机验证码短信发送异常 mobile:{} traceId:{} stackTrace:{}", mobile, traceId, LogExceptionStackTrace.erroStackTrace(e));
         }

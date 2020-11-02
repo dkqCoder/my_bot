@@ -16,7 +16,7 @@ public interface VerifyCodeCheckService {
 
     Result checkLoginByMobile(String verifyCode, String mobile);
 
-    Result checkForgetLoginPass(String verifyCode, String userId);
+    Result checkForgetLoginPass(String verifyCode, String mobile);
 
     Result checkPCQuickRegister(String verifyCode, String mobile, String traceId, ClientRequestHeader header);
 

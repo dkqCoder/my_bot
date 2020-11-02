@@ -8,6 +8,10 @@ import com.jdd.fm.core.log.LogExceptionStackTrace;
 import com.jdd.fm.core.model.ClientRequestHeader;
 import com.jdd.fm.core.model.ResultModel;
 import com.jdd.fm.core.utils.web.WebActionDispatcher;
+import com.tty.appadmin.context.Constants;
+import com.tty.appadmin.controller.model.result.IndexPage;
+import com.tty.appadmin.controller.model.result.StartPage;
+import com.tty.appadmin.controller.service.IndexNavService;
 import com.tty.common.utils.BeanUtils;
 import com.tty.common.utils.Result;
 import org.slf4j.Logger;
@@ -29,6 +33,8 @@ public class AppAdminSecurityController extends APIBaseController {
 
     @Autowired
     private EhcacheManager ehcacheManager;
+    @Autowired
+    private IndexNavService indexNavService;
 
     @RequestMapping(value = "/router")
     public ResultModel router(HttpServletRequest request) {
@@ -49,6 +55,11 @@ public class AppAdminSecurityController extends APIBaseController {
     @Action(value = "10001")
     public ResultModel getStartPage(ClientRequestHeader header, Object body) {
         ResultModel resultModel = new ResultModel();
+        StartPage startPage = new StartPage();
+        startPage.setPicUrl("https://alipic.lanhuapp.com/ps6169a4ba57738fa4-f224-4796-a98d-822df0c312e7");
+        startPage.setActionBusiness(Constants.ActionBusiness.WEB_VIEW);
+        startPage.setActionParam("{\"url\":\"http://wwww.baidu.com\"}");
+        resultModel.setData(startPage);
         return resultModel;
     }
 
@@ -58,6 +69,8 @@ public class AppAdminSecurityController extends APIBaseController {
     @Action(value = "10002")
     public ResultModel getIndexPage(ClientRequestHeader header, Object body) {
         ResultModel resultModel = new ResultModel();
+        IndexPage indexPage = indexNavService.getIndexPage();
+        resultModel.setData(indexPage);
         return resultModel;
     }
 

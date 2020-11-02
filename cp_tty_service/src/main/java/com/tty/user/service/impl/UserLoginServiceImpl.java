@@ -72,13 +72,7 @@ public class UserLoginServiceImpl implements UserLoginService {
                 }
             }
             if (!carryToken) {
-                if (LoginTypeEnum.APP.getValue().equals(userType)) {
-                    loginWithNamePwd(userName, password, false, header, result, 2);
-                } else {
-                    result.setCode(Result.ERROR);
-                    result.setData("不存在的登录方式");
-                }
-
+                loginWithNamePwd(userName, password, false, header, result, 2);
             }
             return result;
         } catch (Exception e) {
@@ -198,12 +192,12 @@ public class UserLoginServiceImpl implements UserLoginService {
             return result;
         }
         //短信验证码登录验证通过
-        String value = userRedis.get(String.format(UserRedisKeys.USER_SMS_LOGIN_VERIFY_CODE_VALIDE, mobile));
-        if (StringUtils.isEmpty(value)) {
-            result.setCode(Result.ERROR);
-            result.setMsg("未获取到验证通过状态");
-            return result;
-        }
+//        String value = userRedis.get(String.format(UserRedisKeys.USER_SMS_LOGIN_VERIFY_CODE_VALIDE, mobile));
+//        if (StringUtils.isEmpty(value)) {
+//            result.setCode(Result.ERROR);
+//            result.setMsg("未获取到验证通过状态");
+//            return result;
+//        }
         UserInfoENT userInfo = userInfoService.getUserInfoByLoginName(userName);
         if (userInfo == null) {
             result.setCode(Result.ERROR);
