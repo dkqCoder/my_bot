@@ -1,4 +1,4 @@
-package com.tty.data.controller.api.vo;
+package com.tty.data.controller.vo;
 
 import com.alibaba.fastjson.annotation.JSONField;
 import java.util.List;
